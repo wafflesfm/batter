@@ -1,0 +1,17 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant::Config.run do |config|
+    config.vm.box = "precise64"
+    config.vm.box_url = "http://files.vagrantup.com/precise64.box"
+    config.vm.network :bridged
+    config.vm.forward_port 8080, 8000
+    config.vm.share_folder "batter", "/home/vagrant/batter", "../"
+    config.vm.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/batter", "1"]
+
+    config.vm.provision :puppet do |puppet|
+        puppet.manifests_path = "puppet/manifests"
+        puppet.manifest_file = "default.pp"
+        puppet.module_path = "puppet/modules"
+    end
+end
