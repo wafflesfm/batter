@@ -79,14 +79,8 @@ service { 'redis-server':
 #add/setup virtualenvwrapper to auto start and add a tmux config that acts more like screen
 
 file { '.bash_aliases':
-  ensure  => 'present',
   path    => '/home/vagrant/.bash_aliases',
   source  => '/vagrant/files/bash_aliases',
-  mode    => 777,
-  require => [
-    Package['python-virtualenv'],
-    Package['virtualenvwrapper'],
-  ]
 }
 
 file { '.tmux.conf':
@@ -96,7 +90,13 @@ file { '.tmux.conf':
 }
 
 file { '/vagrant/files/install_venv.sh':
+  ensure  => 'present',
+  mode    => 777,
   source => '/vagrant/files/install_venv.sh',
+  require => [
+    Package['python-virtualenv'],
+    Package['virtualenvwrapper'],
+  ]
 }
 
 exec { '/vagrant/files/install_venv.sh': 
