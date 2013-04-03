@@ -22,4 +22,4 @@ venv
 
 #Vagrant metadata:
 .vagrant
-.sha1
+*.sha1
