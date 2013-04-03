@@ -1,6 +1,6 @@
 #set up defaults
 
-Exec { path => '/usr/bin:/bin:/usr/sbin:/sbin' }
+Exec { path => '/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin/' }
 exec { 'echo this works': }
 
 
@@ -78,10 +78,15 @@ service { 'redis-server':
 
 #add/setup virtualenvwrapper to auto start and add a tmux config that acts more like screen
 
-file { '.bash_aliases': 
+file { '.bash_aliases':
+  ensure  => 'present',
   path    => '/home/vagrant/.bash_aliases',
   source  => '/vagrant/files/bash_aliases',
-  require => Package['virtualenvwrapper']
+  mode    => 777,
+  require => [
+    Package['python-virtualenv'],
+    Package['virtualenvwrapper'],
+  ]
 }
 
 file { '.tmux.conf':
@@ -90,12 +95,15 @@ file { '.tmux.conf':
   require => Package['tmux']
 }
 
-exec { 'create virtualenv': 
-  command => "/bin/bash -c 'source /usr/local/bin/virtualenvwrapper.sh; mkvirtualenv batter'",
+file { '/vagrant/files/install_venv.sh':
+  source => '/vagrant/files/install_venv.sh',
 }
 
-exec { 'install packages': 
-  command => '/bin/bash -c "source /usr/local/bin/virtualenvwrapper.sh; workon batter; /home/vagrant/.virtualenvs/batter/bin/pip install -r requirements.txt"',
-  cwd     => '/home/vagrant/batter',
-  require => Exec['create virtualenv'],
+exec { '/vagrant/files/install_venv.sh': 
+  require   => [
+    Package['python-virtualenv'],
+    Package['virtualenvwrapper'],
+    File['/vagrant/files/install_venv.sh'],
+  ],
+  logoutput => "on_failure"
 }
