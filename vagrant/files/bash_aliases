@@ -1,0 +1,10 @@
+export PATH
+
+export WORKON_HOME=$HOME/.virtualenvs
+source /usr/local/bin/virtualenvwrapper.sh
+
+mkvirtualenv batter
+echo "CHECKING PYTHON PACKAGES"
+/home/vagrant/.virtualenvs/batter/bin/pip install -r /home/vagrant/batter/requirements.txt
+echo "FINISHED"
+echo "Code is located in ~/batter. Have Fun!"
