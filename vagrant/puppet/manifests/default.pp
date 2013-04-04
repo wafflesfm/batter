@@ -93,16 +93,13 @@ file { '/vagrant/files/install_venv.sh':
   ensure  => 'present',
   mode    => 777,
   source => '/vagrant/files/install_venv.sh',
-  require => [
-    Package['python-virtualenv'],
-    Package['virtualenvwrapper'],
-  ]
 }
 
 exec { '/vagrant/files/install_venv.sh': 
   require   => [
     Package['python-virtualenv'],
     Package['virtualenvwrapper'],
+    File['.bash_aliases'],
     File['/vagrant/files/install_venv.sh'],
   ],
   logoutput => "on_failure"
