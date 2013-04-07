@@ -4,6 +4,12 @@
 from os.path import abspath, basename, dirname, join, normpath
 from sys import path
 
+#url to login
+LOGIN_URL = "/account/login/"
+
+LOGIN_EXEMPT_URLS = (
+ r'^account/', # allow any URL under /account/*
+) 
 
 ########## PATH CONFIGURATION
 # Absolute filesystem path to the Django project directory:
@@ -132,6 +138,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.tz',
     'django.contrib.messages.context_processors.messages',
     'django.core.context_processors.request',
+    'account.context_processors.account',
 )
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#template-loaders
@@ -156,6 +163,9 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'account.middleware.LocaleMiddleware',
+    'account.middleware.TimezoneMiddleware',
+    'batter.middleware.LoginRequiredMiddleware',
 )
 ########## END MIDDLEWARE CONFIGURATION
 
@@ -187,11 +197,15 @@ DJANGO_APPS = (
 THIRD_PARTY_APPS = (
     # Database migration helpers:
     'south',
+    'account',
+    'django_forms_bootstrap',
 )
 
 # Apps specific for this project go here.
 LOCAL_APPS = (
     'music',
+    'batter',
+    'profiles',
 )
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps

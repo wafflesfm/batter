@@ -19,3 +19,8 @@ build
 
 # Virtual environment:
 venv
+
+#Vagrant metadata:
+.vagrant
+*.sha1
+.vagrant.*
