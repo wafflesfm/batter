@@ -24,3 +24,6 @@ venv
 .vagrant
 *.sha1
 .vagrant.*
+
+#torrents
+*.torrent

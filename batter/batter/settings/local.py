@@ -5,7 +5,6 @@ from os.path import join, normpath
 
 from base import *
 
-
 ########## DEBUG CONFIGURATION
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#debug
 DEBUG = True
@@ -60,3 +59,7 @@ MIDDLEWARE_CLASSES += (
     'debug_toolbar.middleware.DebugToolbarMiddleware',
 )
 ########## END TOOLBAR CONFIGURATION
+
+## Tracker CONFIGURATION
+TRACKER_ANNOUNCE = 'http://localhost:7070/announce/'
+##

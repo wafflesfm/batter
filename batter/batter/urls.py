@@ -13,6 +13,6 @@ urlpatterns = patterns('',
     # url(r'^batter/', include('batter.foo.urls')),
 
     url(r"^account/", include("account.urls")),
-
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^torrents/', include("torrents.urls")),
 )

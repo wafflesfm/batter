@@ -3,6 +3,7 @@
 
 from os.path import abspath, basename, dirname, join, normpath
 from sys import path
+import os
 
 #url to login
 LOGIN_URL = "/account/login/"
@@ -10,6 +11,9 @@ LOGIN_URL = "/account/login/"
 LOGIN_EXEMPT_URLS = (
  r'^account/', # allow any URL under /account/*
 ) 
+
+#tracker config
+TRACKERURL = os.environ.get('TRACKERURL', 'http://test.com/announce')
 
 ########## PATH CONFIGURATION
 # Absolute filesystem path to the Django project directory:
@@ -206,6 +210,7 @@ LOCAL_APPS = (
     'music',
     'batter',
     'profiles',
+    'torrents',
 )
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps

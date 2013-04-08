@@ -1,0 +1,13 @@
+{% extends "site_base.html" %}
+{% load bootstrap_tags %}
+
+{% block body %}
+<form action="{% url 'torrents_upload' %}" method="post" enctype="multipart/form-data">
+    <legend>Upload Torrent</legend>
+    {% csrf_token %}
+    {{ form|as_bootstrap }}
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary" value="Upload">Upload</button>
+    </div>
+</form>
+{% endblock %}
