@@ -1,20 +1,19 @@
-========================
 Batter
-========================
+======
 
 It makes Waffles.
 
 To develop on this project follow these steps:
 
-#. Download the code
-#. Create your working environment
-#. Install dependencies
-#. Create the database schema
-#. Run Batter
-#. Contribute changes!
+1. Download the code
+2. Create your working environment
+3. Install dependencies
+4. Create the database schema
+5. Run Batter
+6. Contribute changes!
 
 Download the code
-=================
+-----------------
 
 You can get the most recent copy of Batter by cloning this repository:
 
@@ -23,9 +22,9 @@ You can get the most recent copy of Batter by cloning this repository:
 which will copy all of Batter into a new folder called `batter`.
 
 Create your Working Environment
-===============================
+-------------------------------
 
-First, make sure you have downloaded virtualenv (http://www.virtualenv.org).
+First, make sure you have downloaded [virtualenv](http://www.virtualenv.org).
 Once that's installed, create a new virtualenv inside of the `batter`
 folder:
 
@@ -40,7 +39,7 @@ Your terminal prompt should now look like this:
     (venv) $ 
 
 Install Dependencies
-====================
+--------------------
 
 In your terminal, type
 
@@ -49,7 +48,7 @@ In your terminal, type
 You should see a list of packages being downloaded and installed.
 
 Create the Database Schema
-============================
+----------------------------
 
 In your terminal, type
 
@@ -58,7 +57,7 @@ In your terminal, type
     (venv) $ python batter/manage.py migrate
 
 Run Batter
-==========
+----------
 
 In your terminal, type
 
@@ -68,12 +67,12 @@ You should now be able to open your browser to http://localhost:8000/ and
 use the site.
 
 Contribute changes!
-===================
+-------------------
 
 So you want to contribute to Batter, you devilishly smart and attractive
 person? Awesome!
 
-First off, fork the wafflesfm/batter (https://github.com/wafflesfm/batter)
+First off, fork the [wafflesfm/batter](https://github.com/wafflesfm/batter)
 repository to your own github account. After you've cloned your own fork,
 add the wafflesfm repo as the `upstream` remote with
 
@@ -82,10 +81,10 @@ add the wafflesfm repo as the `upstream` remote with
 (If you have commit access to wafflesfm/batter, you don't need to fork
 or add the upstream remote. The rest of this section still applies to you!)
 
-We use git-flow (https://github.com/nvie/gitflow) for our git workflow.
+We use [git-flow](https://github.com/nvie/gitflow) for our git workflow.
 Debian/Ubuntu users can `sudo aptitude install git-flow`, and users of
-other operating systems can find installation instructions here:
-https://github.com/nvie/gitflow/wiki/Installation
+other operating systems can find installation instructions
+[here](https://github.com/nvie/gitflow/wiki/Installation).
 
 Once you have git-flow installed, you need to set it up for your batter
 repository. Setting up git-flow is a one-time thing. After you clone the repository
