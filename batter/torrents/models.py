@@ -45,7 +45,10 @@ class Torrent(models.Model):
     @classmethod
     def from_torrent_file(cls, torrent_file, *args, **kwargs):
         torrent_dict = bencode.bdecode(torrent_file.read())
-        
+        return cls.from_torrent_dict(torrent_dict, *args, **kwargs)
+
+    @classmethod
+    def from_torrent_dict(cls, torrent_dict, *args, **kwargs):
         torrent = cls()
         torrent.announce = torrent_dict['announce']
         torrent.announce_list = torrent_dict.get('announce-list')
