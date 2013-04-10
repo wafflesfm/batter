@@ -5,7 +5,7 @@ import cStringIO as StringIO
 from bencode import *
 
 from django.views.generic import View, FormView
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.core.servers.basehttp import FileWrapper
 
@@ -23,9 +23,17 @@ def upload_torrent(request):
         if form.is_valid():
             torrent_file = request.FILES['torrent_file']
             torrent = Torrent.from_torrent_file(torrent_file)
-            torrent.save()
-
+            try:
+                torrent.save()
+                return redirect(torrent)
+            except:
+                pass
     return render(request, 'torrents/upload.html', {'form': form})
+
+def view_torrent(request, pk):
+    torrent = get_object_or_404(Torrent, pk=pk)
+
+    return HttpResponse("PK is "+str(torrent.pk)+"<br />name is "+torrent.name)
 
 
 class TorrentGenerate(View):

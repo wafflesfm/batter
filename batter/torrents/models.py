@@ -6,6 +6,7 @@ import json
 from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
+from django.core.urlresolvers import reverse
 
 from jsonfield import JSONField
 
@@ -60,6 +61,9 @@ class Torrent(models.Model):
         torrent.md5sum = torrent_dict['info'].get('md5sum')
         torrent.files = torrent_dict['info'].get('files')
         return torrent
+
+    def get_absolute_url(self):
+        return reverse('torrents_view', args=[str(self.id)])
 
     def generate_torrent(self, *args, **kwargs):
         torrent = {}
