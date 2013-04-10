@@ -1,7 +1,7 @@
 Batter
 ======
 
-It makes Waffles.
+It makes Waffles (and other tasty things)!
 
 To develop on this project follow these steps:
 
