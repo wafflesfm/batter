@@ -64,7 +64,7 @@ In your terminal, type
 
     (venv) $ python batter/manage.py runserver
 
-You should now be able to open your browser to http://localhost:800/ and
+You should now be able to open your browser to http://localhost:8000/ and
 use the site.
 
 Contribute changes!
