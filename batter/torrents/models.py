@@ -16,6 +16,8 @@ class Torrent(models.Model):
 
     """The announce URL of the tracker (string)"""
     announce = models.TextField()
+    """(optional) this is an extention to the official specification, offering backwards-compatibility. (list of lists of strings)."""
+    announce_list = JSONField()
     """(optional) the creation time of the torrent, in standard UNIX epoch format (integer, seconds since 1-Jan-1970 00:00:00 UTC)"""
     creation_date = models.PositiveIntegerField(**optional) # UTC timestamp
     """(optional) free-form textual comments of the author (string)"""
@@ -45,6 +47,7 @@ class Torrent(models.Model):
         
         torrent = cls()
         torrent.announce = torrent_dict['announce']
+        torrent.announce_list = torrent_dict.get('announce-list')
         torrent.creation_date = torrent_dict.get('creation date')
         torrent.comment = torrent_dict.get('comment')
         torrent.created_by = torrent_dict.get('created by')
