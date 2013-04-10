@@ -78,7 +78,7 @@ def upload_torrent(request):
     if request.method == 'POST':
         form = TorrentUploadForm(request.POST, request.FILES)
         if form.is_valid():
-            torrent_file = parse_torrent(request.FILES['torrentfile'])
+            torrent_file = parse_torrent(request.FILES['torrent_file'])
 
             if Torrent.objects.filter(pieces=torrent_file['info']['pieces']).exists():
                 return HttpResponse('torrent already exists in database')
