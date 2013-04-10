@@ -29,9 +29,7 @@ Once that's installed, create a new virtualenv inside of the `batter`
 folder:
 
     $ cd batter
-
     $ virtualenv --distribute venv
-
     $ source venv/bin/activate
 
 Your terminal prompt should now look like this:
@@ -53,7 +51,6 @@ Create the Database Schema
 In your terminal, type
 
     (venv) $ python batter/manage.py syncdb
-
     (venv) $ python batter/manage.py migrate
 
 Run Batter
