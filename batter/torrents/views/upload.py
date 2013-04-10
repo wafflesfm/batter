@@ -21,12 +21,13 @@ def upload_torrent(request):
     if request.method == 'POST':
         form = TorrentUploadForm(request.POST, request.FILES)
         if form.is_valid():
-            torrent_file = request.FILES['torrent_file']
-            torrent = Torrent.from_torrent_file(torrent_file)
+            torrent = form.cleaned_data['torrent']
             try:
                 torrent.save()
                 return redirect(torrent)
             except:
+                # We've already uploaded this torrent
+                # (torrent.pieces is not unique in the database)
                 pass
     return render(request, 'torrents/upload.html', {'form': form})
 
