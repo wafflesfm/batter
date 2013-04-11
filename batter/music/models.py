@@ -57,10 +57,10 @@ class MusicUpload(TimeStampedModel):
 
 
 class Artist(TimeStampedModel):
-    mbid = models.TextField()
+    discogs_id = models.TextField()
     name = models.TextField()
     sort_name = models.SlugField()
-    related_artists = models.ManyToManyField('self', related_name="artist_related_artists")
+    related_artists = models.ManyToManyField('self', related_name="artist_related_artists", blank=True, null=True)
     artist_type = models.ForeignKey('ArtistType')
     country = models.ForeignKey('Country')
     gender = models.TextField()
@@ -79,6 +79,14 @@ class ArtistType(models.Model):
 
     def __unicode__(self):
         return self.name
+
+
+class ArtistAlias(models.Model):
+    alias = models.TextField()
+    artist = models.ForeignKey('Artist')
+
+    def __unicode__(self):
+        return self.alias
 
 
 class Country(models.Model):
@@ -106,7 +114,7 @@ class Release(TimeStampedModel):
         ('unknown', 'Unknown')
     )
 
-    mbid = models.TextField()
+    discogs_id = models.TextField()
     name = models.TextField()
     artist_credit = models.ManyToManyField('Artist')
     country = models.ForeignKey('Country')
