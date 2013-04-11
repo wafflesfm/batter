@@ -7,48 +7,65 @@ from taggit.managers import TaggableManager()
 from torrents.model import Torrent
 
 
+FORMAT_TYPES = Choices(
+    ('mp3', 'MP3'),
+    ('flac', 'FLAC'),
+    ('aac', 'AAC'),
+    ('ac3', 'AC3'),
+    ('dts', 'DTS'),
+)
+
+BITRATE_TYPES = Choices(
+    ('192', '192'),
+    ('apsvbr', 'APS (VBR)'),
+    ('v2vbr', 'V2 (VBR)'),
+    ('v1vbr', 'V1 (VBR)'),
+    ('256', '256'),
+    ('apxvbr', 'APX (VBR)'),
+    ('v0vbr', 'V0 (VBR)'),
+    ('320', '320'),
+    ('lossless', 'Lossless'),
+    ('24bitlossless', '24Bit Losless'),
+    ('v8vbr', 'V8 (VBR)'),
+    ('other', 'Other'),
+
+)
+
+MEDIA_TYPES = Choices(
+    ('cd', 'CD'),
+    ('dvd', 'DVD'),
+    ('vinyl', 'Vinyl'),
+    ('soundboard', 'Soundboard'),
+    ('sacd', 'SACD'),
+    ('dat', 'DAT'),
+    ('cassette', 'Cassette'),
+    ('web', 'WEB'),
+    ('bluray', 'Blu-Ray'),
+)
+
+RELEASE_TYPES = (
+    ('album', 'Album'),
+    ('soundtrack', 'Soundtrack'),
+    ('ep', 'EP'),
+    ('anthology', 'Anthology'),
+    ('compilation', 'Compilation'),
+    ('djmix', 'DJ Mix'),
+    ('Single', 'single'),
+    ('livealbum', 'Live Album'),
+    ('remix', 'Remix'),
+    ('bootleg','Bootleg'),
+    ('interview', 'Interview'),
+    ('mixtape', 'Mixtape'),
+    ('unknown', 'Unknown')
+)
+
+
 class MusicUpload(TimeStampedModel):
-    FORMATS = Choices(
-        ('mp3', 'MP3'),
-        ('flac', 'FLAC'),
-        ('aac', 'AAC'),
-        ('ac3', 'AC3'),
-        ('dts', 'DTS'),
-    )
-
-    BITRATE = Choices(
-        ('192', '192'),
-        ('apsvbr', 'APS (VBR)'),
-        ('v2vbr', 'V2 (VBR)'),
-        ('v1vbr', 'V1 (VBR)'),
-        ('256', '256'),
-        ('apxvbr', 'APX (VBR)'),
-        ('v0vbr', 'V0 (VBR)'),
-        ('320', '320'),
-        ('lossless', 'Lossless'),
-        ('24bitlossless', '24Bit Losless'),
-        ('v8vbr', 'V8 (VBR)'),
-        ('other', 'Other'),
-
-    )
-
-    MEDIA = Choices(
-        ('cd', 'CD'),
-        ('dvd', 'DVD'),
-        ('vinyl', 'Vinyl'),
-        ('soundboard', 'Soundboard'),
-        ('sacd', 'SACD'),
-        ('dat', 'DAT'),
-        ('cassette', 'Cassette'),
-        ('web', 'WEB'),
-        ('bluray', 'Blu-Ray'),
-    )
-
     torrent = models.ForeignKey(Torrent)
     release = models.ForeignKey('Release')
-    format = models.TextField(choices=FORMATS)
-    bitrate = models.TextField(choices=BITRATE)
-    media = models.TextField(choices=MEDIA)
+    format = models.TextField(choices=FORMAT_TYPES)
+    bitrate = models.TextField(choices=BITRATE_TYPES)
+    media = models.TextField(choices=MEDIA_TYPES)
     logfile = models.TextField(blank=True, null=True)
     uploader = models.ForeignKey(User)
 
@@ -98,22 +115,6 @@ class Country(models.Model):
 
 
 class Release(TimeStampedModel):
-    RELEASE_TYPES = (
-        ('album', 'Album'),
-        ('soundtrack', 'Soundtrack'),
-        ('ep', 'EP'),
-        ('anthology', 'Anthology'),
-        ('compilation', 'Compilation'),
-        ('djmix', 'DJ Mix'),
-        ('Single', 'single'),
-        ('livealbum', 'Live Album'),
-        ('remix', 'Remix'),
-        ('bootleg','Bootleg'),
-        ('interview', 'Interview'),
-        ('mixtape', 'Mixtape'),
-        ('unknown', 'Unknown')
-    )
-
     discogs_id = models.TextField()
     name = models.TextField()
     artist_credit = models.ManyToManyField('Artist')

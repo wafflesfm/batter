@@ -1,5 +1,4 @@
 import json
-
 import requests
 
 
@@ -52,10 +51,14 @@ class DiscogsAPI(object):
         takes options page argument for starting page
         """
 
+        page += 1
         releases = self.make_request('/artists/%s/releases' % artist_id)
-        for p in range(page, int(releases['pagination']['pages'])):
-            params = {'page': p}
+        yield releases['releases']
+
+        while page < releases['pagination']['pages']:
+            params = {'page': page}
             yield self.make_request('/artists/%s/releases' % artist_id, **params)['releases']
+            page += 1
 
     def get_release(self, release_id):
         release = self.make_request('/releases/%s' % release_id)
@@ -67,3 +70,7 @@ if __name__ == '__main__':
     releases = d.get_releases(45) # Aphex Twin
     print releases.next()[0]['id']
     print releases.next()[0]['id']
+    print releases.next()[0]['id']
+    print releases.next()[0]['id']
+    print releases.next()[0]['id']
+    print releases.next()[0]['id'] 
