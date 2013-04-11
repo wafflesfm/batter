@@ -33,6 +33,15 @@ class MusicUpload(TimeStampedModel):
     )
 
     MEDIA = Choices(
+        ('cd', 'CD'),
+        ('dvd', 'DVD'),
+        ('vinyl', 'Vinyl'),
+        ('soundboard', 'Soundboard'),
+        ('sacd', 'SACD'),
+        ('dat', 'DAT'),
+        ('cassette', 'Cassette'),
+        ('web', 'WEB'),
+        ('bluray', 'Blu-Ray'),
     )
 
     torrent = models.ForeignKey(Torrent)
