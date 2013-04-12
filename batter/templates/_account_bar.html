@@ -8,7 +8,7 @@
             <li>
                 {# TODO: better notifications icon #}
                 <a href="{% url "notifications_list" %}">
-                    !
+                    <i class="icon-exclamation-sign icon-white"></i>
                     {% if unseen_notifications.count %}
                         <span class="label">{{ unseen_notifications.count }}</span>
                     {% endif %}

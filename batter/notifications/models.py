@@ -20,23 +20,16 @@ class NotificationManager(models.Manager):
 class Notification(models.Model):
     recipient = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='notifications')
     
-    title = models.CharField(max_length=64)
-    body = models.CharField(max_length=512)
+    title = models.TextField(blank=False, null=False)
+    body = models.TextField(blank=False, null=False)
+    title_text = models.TextField(blank=True, null=False)
+    body_text = models.TextField(blank=True, null=False)
 
     seen = models.BooleanField(default=False)
     sent_at = models.DateTimeField(auto_now_add=True)
     seen_at = models.DateTimeField(null=True)
 
     objects = NotificationManager()
-
-    @classmethod
-    def new(cls, recipient, title, body):
-        """ Create a new Notification """
-        notification = cls()
-        notification.recipient = recipient
-        notification.title = title
-        notification.body = body
-        return notification
 
     def mark_seen(self):
         """ Mark a Notification as having been seen """

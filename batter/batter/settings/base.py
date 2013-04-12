@@ -259,3 +259,10 @@ LOGGING = {
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#wsgi-application
 WSGI_APPLICATION = 'wsgi.application'
 ########## END WSGI CONFIGURATION
+
+########## django-notification CONFIGURATION
+NOTIFICATION_BACKENDS = [
+    ("email", "notification.backends.email.EmailBackend"),
+    ("model", "notifications.backend.ModelBackend"),
+]
+########## END django-notification CONFIGURATION

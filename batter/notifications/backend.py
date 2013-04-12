@@ -5,6 +5,8 @@ from notification import backends
 from . import models
 
 class ModelBackend(backends.BaseBackend):
+    spam_sensitivity = 1
+
     def deliver(self, recipient, notice_type, extra_context):
         context = self.default_context()
         context.update({
@@ -15,10 +17,17 @@ class ModelBackend(backends.BaseBackend):
 
         messages = self.get_formatted_message({
             "short.txt",
-            "full.txt"
+            "full.txt",
+            "short.html",
+            "full.html"
         }, notice_type.label, context)
 
-        title, body = messages["short.txt"], messages["full.txt"]
+        notification = models.Notification()
+        notification.recipient = recipient
 
-        notification = models.Notification.new(recipient, title, body)
+        notification.title = messages["short.html"]
+        notification.body = messages["full.html"]
+        notification.title_text = messages["short.txt"]
+        notification.body_text = messages["full.txt"]
+        
         notification.save()
