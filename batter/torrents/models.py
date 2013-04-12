@@ -1,11 +1,14 @@
 import base64
 import bencode
 import binascii
+import collections
 import json
 
 from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
+from django.core.urlresolvers import reverse
+from django.core.validators import EMPTY_VALUES
 
 from jsonfield import JSONField
 
@@ -44,7 +47,10 @@ class Torrent(models.Model):
     @classmethod
     def from_torrent_file(cls, torrent_file, *args, **kwargs):
         torrent_dict = bencode.bdecode(torrent_file.read())
-        
+        return cls.from_torrent_dict(torrent_dict, *args, **kwargs)
+
+    @classmethod
+    def from_torrent_dict(cls, torrent_dict, *args, **kwargs):
         torrent = cls()
         torrent.announce = torrent_dict['announce']
         torrent.announce_list = torrent_dict.get('announce-list')
@@ -61,60 +67,51 @@ class Torrent(models.Model):
         torrent.files = torrent_dict['info'].get('files')
         return torrent
 
-    def generate_torrent(self, *args, **kwargs):
+    def get_absolute_url(self):
+        return reverse('torrents_view', args=[str(self.id)])
+
+    def to_bencoded_string(self, *args, **kwargs):
         torrent = {}
         torrent['info'] = {}
 
-        torrent['creation date'] = self.creation_date
-        torrent['announce'] = settings.TRACKERURL
-        torrent['created by'] = self.client.encode('utf-8', 'ignore')
-        torrent['encoding'] = self.encoding.encode('utf-8', 'ignore')
-
-        print self.files
-        files = json.loads(self.files.replace("'", '"'), object_hook=_decode_dict)
+        torrent['announce'] = convert(self.announce)
+        if self.announce_list not in EMPTY_VALUES:
+            torrent['announce-list'] = convert(self.announce_list)
+        if self.creation_date not in EMPTY_VALUES:
+            torrent['creation date'] = self.creation_date
+        if self.comment not in EMPTY_VALUES:
+            torrent['comment'] = convert(self.comment)
+        if self.created_by not in EMPTY_VALUES:
+            torrent['created by'] = convert(self.created_by)
+        if self.encoding not in EMPTY_VALUES:
+            torrent['encoding'] = convert(self.encoding)
 
         torrent['info']['piece length'] = self.piece_length
         torrent['info']['pieces'] = binascii.unhexlify(self.pieces)
-        torrent['info']['private'] = 1
+        if self.private:
+            torrent['info']['private'] = 1 
+        torrent['info']['name'] = convert(self.name)
 
-        if len(files) > 1: #multi-file mode
-            torrent['info']['files'] = files
-            torrent['info']['name'] = self.name.encode('utf-8', 'ignore')
+        if len(self.files) > 1: #multi-file mode
+            torrent['info']['files'] = convert(self.files)
 
         else: #single file mode
-            torrent['info']['name'] = self.name.encode('utf-8', 'ignore')
-            torrent['info']['length'] = files[0]['length']
-        
-        return bencode(torrent)
+            torrent['info']['length'] = self.length
+            torrent['info']['md5sum'] = convert(self.md5sum)
+
+        return bencode.bencode(torrent)
 
     def __unicode__(self):
         return self.name
 
-
-#helper functions so our json returns python strings and not unicode
-def _decode_list(data):
-    rv = []
-    for item in data:
-        if isinstance(item, unicode):
-            item = item.encode('utf-8')
-        elif isinstance(item, list):
-            item = _decode_list(item)
-        elif isinstance(item, dict):
-            item = _decode_dict(item)
-        rv.append(item)
-    return rv
-
-
-def _decode_dict(data):
-    rv = {}
-    for key, value in data.iteritems():
-        if isinstance(key, unicode):
-           key = key.encode('utf-8')
-        if isinstance(value, unicode):
-           value = value.encode('utf-8')
-        elif isinstance(value, list):
-           value = _decode_list(value)
-        elif isinstance(value, dict):
-           value = _decode_dict(value)
-        rv[key] = value
-    return rv
+def convert(data):
+    """ Converts unicode (or a dict/Mapping/Iterable containing unicode
+    strings) to str. """
+    if isinstance(data, unicode):
+        return str(data)
+    elif isinstance(data, collections.Mapping):
+        return dict(map(convert, data.iteritems()))
+    elif isinstance(data, collections.Iterable):
+        return type(data)(map(convert, data))
+    else:
+        return data

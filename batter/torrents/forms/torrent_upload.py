@@ -1,5 +1,6 @@
 from django import forms
 
+from ..fields import TorrentField
 
 class TorrentUploadForm(forms.Form):
-    torrent_file = forms.FileField(label="Torrent File")
+    torrent = TorrentField(label="Torrent File")
