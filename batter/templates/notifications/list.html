@@ -1,0 +1,19 @@
+{% extends "site_base.html" %}
+
+{% block body %}
+    <h1>Your Notifications</h1>
+    {% include "pagination/pagination.html" %}
+    {% if object_list %}
+    <ul>
+        {% for notification in object_list %}
+        <li>
+            <h3>{{ notification.title }}</h3>
+            <p>{{ notification.body }}</p>
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <h3>You don't have any notifications yet.</h3>
+    {% endif %}
+    {% include "pagination/pagination.html" %}
+{% endblock %}
