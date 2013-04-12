@@ -5,7 +5,7 @@ install:
   - "pip install -r requirements/test.txt --use-mirrors"
   - pip install coveralls
 script:
-  - coverage run --source=batter --omit="admin.py" batter/manage.py test --settings=batter.settings.test
+  - coverage run batter/manage.py test --settings=batter.settings.test
   - flake8 --select=E,W batter --exclude="migrations"
 after_success:
   - coveralls
