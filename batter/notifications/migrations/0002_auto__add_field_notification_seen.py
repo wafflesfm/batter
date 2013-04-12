@@ -8,21 +8,15 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding model 'Notification'
-        db.create_table(u'notifications_notification', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('recipient', self.gf('django.db.models.fields.related.ForeignKey')(related_name='notifications', to=orm['auth.User'])),
-            ('title', self.gf('django.db.models.fields.CharField')(max_length=64)),
-            ('body', self.gf('django.db.models.fields.CharField')(max_length=512)),
-            ('sent_at', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
-            ('seen_at', self.gf('django.db.models.fields.DateTimeField')(null=True)),
-        ))
-        db.send_create_signal(u'notifications', ['Notification'])
+        # Adding field 'Notification.seen'
+        db.add_column(u'notifications_notification', 'seen',
+                      self.gf('django.db.models.fields.BooleanField')(default=False),
+                      keep_default=False)
 
 
     def backwards(self, orm):
-        # Deleting model 'Notification'
-        db.delete_table(u'notifications_notification')
+        # Deleting field 'Notification.seen'
+        db.delete_column(u'notifications_notification', 'seen')
 
 
     models = {
@@ -67,6 +61,7 @@ class Migration(SchemaMigration):
             'body': ('django.db.models.fields.CharField', [], {'max_length': '512'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'recipient': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'notifications'", 'to': u"orm['auth.User']"}),
+            'seen': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'seen_at': ('django.db.models.fields.DateTimeField', [], {'null': 'True'}),
             'sent_at': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'title': ('django.db.models.fields.CharField', [], {'max_length': '64'})

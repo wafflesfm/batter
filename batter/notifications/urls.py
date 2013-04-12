@@ -4,5 +4,5 @@ from django.views.generic import TemplateView
 from . import views
 
 urlpatterns = patterns('',
-    url(r'^list/$', views.NotificationList.as_view()),
+    url(r'^list/$', views.NotificationList.as_view(), name="notifications_list"),
 )

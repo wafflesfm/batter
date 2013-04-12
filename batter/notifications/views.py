@@ -13,7 +13,9 @@ class NotificationList(LoginRequiredMixin, JSONResponseMixin, AjaxResponseMixin,
     content_type = 'text/html'
 
     def get_queryset(self):
-        return models.Notification.objects.filter(recipient=self.request.user)
+        qs = models.Notification.objects.by_user(self.request.user)
+        qs.mark_seen()
+        return qs
 
     def get_ajax(self, request):
         self.object_list = self.get_queryset()
