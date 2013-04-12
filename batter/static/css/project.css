@@ -1,1 +1,27 @@
 /*! project specific CSS goes here. */
+
+/* ugly copy-pasta to make form-included links work in dropdowns */
+.dropdown-menu > form > li > a {
+display: block;
+padding: 3px 20px;
+clear: both;
+font-weight: normal;
+line-height: 20px;
+color: #333333;
+white-space: nowrap;
+}
+.dropdown-menu > form > li > a:hover, .dropdown-menu > form > li > a:focus {
+color: #ffffff;
+text-decoration: none;
+background-color: #0081c2;
+background-image: -moz-linear-gradient(top, #0088cc, #0077b3);
+background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#0088cc), to(#0077b3));
+background-image: -webkit-linear-gradient(top, #0088cc, #0077b3);
+background-image: -o-linear-gradient(top, #0088cc, #0077b3);
+background-image: linear-gradient(to bottom, #0088cc, #0077b3);
+background-repeat: repeat-x;
+filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff0088cc', endColorstr='#ff0077b3', GradientType=0);
+}
+.dropdown-menu > form > li > a:hover > i[class^="icon-"] {
+background-image: url("../img/glyphicons-halflings-white.png");
+}
