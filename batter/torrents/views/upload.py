@@ -48,7 +48,7 @@ class TorrentGenerate(View):
         except:
             return HttpResponse('torrent doesnt exist. REPLACE ME')
 
-        torrent_file = StringIO.StringIO(torrent.generate_torrent())
+        torrent_file = StringIO.StringIO(torrent.to_bencoded_string())
 
         response = HttpResponse(torrent_file.read(), content_type='application/x-bittorrent')
         response['Content-Disposition'] = 'attachment; filename=' + torrent.name + '.torrent'
