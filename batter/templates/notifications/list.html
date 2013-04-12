@@ -6,9 +6,9 @@
     {% if object_list %}
     <ul>
         {% for notification in object_list %}
-        <li>
-            <h3>{{ notification.title }}</h3>
-            <p>{{ notification.body }}</p>
+        <li class="notification {% if notification.seen %}notification-fresh{% else %}notification-stale{% endif %}">
+            <h3>{{ notification.title|safe }}</h3>
+            <p>{{ notification.body|safe }}</p>
         </li>
         {% endfor %}
     </ul>

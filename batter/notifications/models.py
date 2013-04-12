@@ -41,8 +41,14 @@ class Notification(models.Model):
     def as_object(self):
         """ Prepare a Notification for display, via e.g. JSON """
         return {
-            "title": self.title,
-            "body": self.body,
+            "text": {
+                "title": self.title_text,
+                "body": self.body_text,
+            },
+            "html": {
+                "title": self.title,
+                "body": self.body,
+            },
             "seen": self.seen,
-            "sent_at": self.sent_at
+            "sent_at": self.sent_at,
         }
