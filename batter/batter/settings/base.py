@@ -9,8 +9,8 @@ import os
 LOGIN_URL = "/account/login/"
 
 LOGIN_EXEMPT_URLS = (
- r'^account/', # allow any URL under /account/*
-) 
+    r'^account/',  # allow any URL under /account/*
+)
 
 #tracker config
 TRACKERURL = os.environ.get('TRACKERURL', 'http://test.com/announce')
@@ -103,12 +103,14 @@ STATIC_ROOT = normpath(join(SITE_ROOT, 'assets'))
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#static-url
 STATIC_URL = '/static/'
 
-# See: https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#std:setting-STATICFILES_DIRS
+# See: https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/
+#      #std:setting-STATICFILES_DIRS
 STATICFILES_DIRS = (
     normpath(join(SITE_ROOT, 'static')),
 )
 
-# See: https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#staticfiles-finders
+# See: https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/
+#      #staticfiles-finders
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
@@ -124,7 +126,8 @@ SECRET_KEY = r"9ledr(hq#a#r-sa8$l)5+3nila(h3pe5)+jvwdh8bbk%a+=!@-"
 
 
 ########## FIXTURE CONFIGURATION
-# See: https://docs.djangoproject.com/en/dev/ref/settings/#std:setting-FIXTURE_DIRS
+# See: https://docs.djangoproject.com/en/dev/ref/settings/
+#      #std:setting-FIXTURE_DIRS
 FIXTURE_DIRS = (
     normpath(join(SITE_ROOT, 'fixtures')),
 )
@@ -132,7 +135,8 @@ FIXTURE_DIRS = (
 
 
 ########## TEMPLATE CONFIGURATION
-# See: https://docs.djangoproject.com/en/dev/ref/settings/#template-context-processors
+# See: https://docs.djangoproject.com/en/dev/ref/settings/
+#      #template-context-processors
 TEMPLATE_CONTEXT_PROCESSORS = (
     'django.contrib.auth.context_processors.auth',
     'django.core.context_processors.debug',

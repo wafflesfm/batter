@@ -11,9 +11,10 @@ class Profile(models.Model):
 
     def save(self, *args, **kwargs):
         """
-        override save method to generate a trackerid for torrent tracker url generation
+        override save method to generate a trackerid
+        for torrent tracker url generation
         """
-        
+
         if not trackerid:
             trackerid = generate_trackerid()
         super(Profile, self).save(*args, **kwargs)

@@ -2,10 +2,17 @@ from django.db import models
 
 from model_utils.models import TimeStampedModel
 
+
 class Artist(TimeStampedModel):
     mbid = models.TextField()
-    name = models.ForeignKey('ArtistName', related_name="artist_name")
-    sort_name = models.ForeignKey('ArtistName', related_name="artist_sort_name")
+    name = models.ForeignKey(
+        'ArtistName',
+        related_name="artist_name"
+    )
+    sort_name = models.ForeignKey(
+        'ArtistName',
+        related_name="artist_sort_name"
+    )
     begin_date = models.DateField()
     end_date = models.DateField(null=True, blank=True)
     type = models.ForeignKey('ArtistType')
@@ -16,6 +23,7 @@ class Artist(TimeStampedModel):
     def __str__(self):
         return str(self.name)
 
+
 class ArtistCredit(models.Model):
     name = models.ForeignKey('ArtistName')
     artists = models.ManyToManyField('Artist')
@@ -23,11 +31,13 @@ class ArtistCredit(models.Model):
     def __str__(self):
         return str(self.name)
 
+
 class ArtistGender(models.Model):
     name = models.TextField()
 
     def __str__(self):
         return self.name
+
 
 class ArtistName(models.Model):
     name = models.TextField()
@@ -35,11 +45,13 @@ class ArtistName(models.Model):
     def __str__(self):
         return self.name
 
+
 class ArtistType(models.Model):
     name = models.TextField()
 
     def __str__(self):
         return self.name
+
 
 class Country(models.Model):
     name = models.TextField()
@@ -47,6 +59,7 @@ class Country(models.Model):
 
     def __str__(self):
         return "{} ({})".format(self.name, self.code)
+
 
 class Release(TimeStampedModel):
     mbid = models.TextField()
@@ -63,17 +76,21 @@ class Release(TimeStampedModel):
     def __str__(self):
         return str(self.name)
 
+
 class ReleaseName(models.Model):
     name = models.TextField()
 
     def __str__(self):
         return self.name
 
+
 #class ReleasePackaging(models.Model):
 #    name = models.TextField()
 
+
 #class ReleaseStatus(models.Model):
 #    name = models.TextField()
+
 
 class ReleaseGroup(TimeStampedModel):
     mbid = models.TextField()
@@ -84,6 +101,7 @@ class ReleaseGroup(TimeStampedModel):
 
     def __str__(self):
         return str(self.name)
+
 
 #class ReleaseGroupPrimaryType(models.Model):
 #    name = models.TextField()

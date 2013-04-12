@@ -3,6 +3,7 @@ from django.db.models.query import QuerySet
 from django.conf import settings
 from django.utils.timezone import now
 
+
 class NotificationQuerySet(QuerySet):
     def mark_seen(self):
         return self.update(seen=True, seen_at=now())
@@ -10,16 +11,21 @@ class NotificationQuerySet(QuerySet):
     def unseen(self):
         return self.filter(seen=False)
 
+
 class NotificationManager(models.Manager):
     def get_queryset(self):
         return NotificationQuerySet(self.model)
 
     def by_user(self, user):
         return self.get_queryset().filter(recipient=user)
- 
+
+
 class Notification(models.Model):
-    recipient = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='notifications')
-    
+    recipient = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        related_name='notifications'
+    )
+
     title = models.TextField(blank=False, null=False)
     body = models.TextField(blank=False, null=False)
     title_text = models.TextField(blank=True, null=False)
