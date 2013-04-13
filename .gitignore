@@ -27,3 +27,7 @@ venv
 
 #torrents
 *.torrent
+
+# Coverage
+.coverage
+htmlcov/

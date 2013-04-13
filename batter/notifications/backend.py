@@ -4,6 +4,7 @@ from notification import backends
 
 from . import models
 
+
 class ModelBackend(backends.BaseBackend):
     spam_sensitivity = 1
 
@@ -29,5 +30,5 @@ class ModelBackend(backends.BaseBackend):
         notification.body = messages["full.html"]
         notification.title_text = messages["short.txt"]
         notification.body_text = messages["full.txt"]
-        
+
         notification.save()

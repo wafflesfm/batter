@@ -1,5 +1,6 @@
 from . import models
 
+
 def notifications(request):
     """
     Context processor for notifications
@@ -9,8 +10,9 @@ def notifications(request):
     """
     user = request.user
     if user.is_authenticated():
+        notifications = models.Notification.objects.by_user(user).unseen()
         return {
-            'unseen_notifications': models.Notification.objects.by_user(user).unseen()
+            'unseen_notifications': notifications
         }
     else:
         return {}

@@ -14,34 +14,48 @@ from jsonfield import JSONField
 
 optional = {'null': True, 'blank': True}
 
+
 class Torrent(models.Model):
     """Django model for storing uploaded torrent info"""
 
     """The announce URL of the tracker (string)"""
     announce = models.TextField()
-    """(optional) this is an extention to the official specification, offering backwards-compatibility. (list of lists of strings)."""
+    """(optional) this is an extension to the official specification,
+                  offering backwards-compatibility.
+                  (list of lists of strings)."""
     announce_list = JSONField(**optional)
-    """(optional) the creation time of the torrent, in standard UNIX epoch format (integer, seconds since 1-Jan-1970 00:00:00 UTC)"""
-    creation_date = models.PositiveIntegerField(**optional) # UTC timestamp
+    """(optional) the creation time of the torrent,
+                  in standard UNIX epoch format
+                  (integer, seconds since 1-Jan-1970 00:00:00 UTC)"""
+    creation_date = models.PositiveIntegerField(**optional)
     """(optional) free-form textual comments of the author (string)"""
     comment = models.TextField(**optional)
-    """(optional) name and version of the program used to create the .torrent (string)"""
+    """(optional) name and version of the program used to create
+                  the .torrent (string)"""
     created_by = models.TextField(**optional)
-    """(optional) the string encoding format used to generate the pieces part of the info dictionary in the .torrent metafile (string)"""
+    """(optional) the string encoding format used to generate the pieces part
+                  of the info dictionary in the .torrent metafile (string)"""
     encoding = models.TextField(**optional)
     """(info/) number of bytes in each piece (integer)"""
     piece_length = models.PositiveIntegerField()
-    """(info/) string consisting of the concatenation of all 20-byte SHA1 hash values, one per piece (byte string, i.e. not urlencoded)"""
+    """(info/) string consisting of the concatenation of all 20-byte SHA1
+               hash values, one per piece (byte string, not urlencoded)"""
     pieces = models.TextField(unique=True)
-    """(info/) whether or not the client may obtain peer data from other means; e.g. PEX or DHT"""
+    """(info/) whether or not the client may obtain peer data from other means
+               e.g. PEX or DHT"""
     private = models.BooleanField()
-    """(info/) The suggested name of the torrent file, if the torrent is single-file. Otherwise, the suggested name of the directory in which to put files"""
+    """(info/) The suggested name of the torrent file, if single-file torrent.
+               Otherwise, the suggested name of the directory
+               in which to put files"""
     name = models.TextField()
-    """(info/single-file) length of the file in bytes. None if the torrent is multi-file"""
+    """(info/single-file) length of the file in bytes.
+                          None if the torrent is multi-file"""
     length = models.PositiveIntegerField(**optional)
-    """(info/single-file, optional) a 32-character hexadecimal string corresponding to the MD5 sum of the file"""
+    """(info/single-file, optional) a 32-character hexadecimal string
+                                    corresponding to the file's MD5 sum"""
     md5sum = models.TextField(**optional)
-    """(info/multi-file) a list of {name, length, md5sum} dicts corresponding to the files tracked by the torrent"""
+    """(info/multi-file) a list of {name, length, md5sum} dicts
+                         corresponding to the files tracked by the torrent"""
     files = JSONField(**optional)
 
     @classmethod
@@ -51,6 +65,7 @@ class Torrent(models.Model):
 
     @classmethod
     def from_torrent_dict(cls, torrent_dict, *args, **kwargs):
+        info_dict = torrent_dict['info']
         torrent = cls()
         torrent.announce = torrent_dict['announce']
         torrent.announce_list = torrent_dict.get('announce-list')
@@ -58,13 +73,13 @@ class Torrent(models.Model):
         torrent.comment = torrent_dict.get('comment')
         torrent.created_by = torrent_dict.get('created by')
         torrent.encoding = torrent_dict.get('encoding')
-        torrent.piece_length = torrent_dict['info'].get('piece length')
-        torrent.pieces = binascii.hexlify(torrent_dict['info'].get('pieces'))
-        torrent.private = True if torrent_dict['info'].get('private', 0) == 1 else False
-        torrent.name = torrent_dict['info'].get('name')
-        torrent.length = torrent_dict['info'].get('length')
-        torrent.md5sum = torrent_dict['info'].get('md5sum')
-        torrent.files = torrent_dict['info'].get('files')
+        torrent.piece_length = info_dict.get('piece length')
+        torrent.pieces = binascii.hexlify(info_dict.get('pieces'))
+        torrent.private = True if info_dict.get('private', 0) == 1 else False
+        torrent.name = info_dict.get('name')
+        torrent.length = info_dict.get('length')
+        torrent.md5sum = info_dict.get('md5sum')
+        torrent.files = info_dict.get('files')
         return torrent
 
     def get_absolute_url(self):
@@ -89,13 +104,13 @@ class Torrent(models.Model):
         torrent['info']['piece length'] = self.piece_length
         torrent['info']['pieces'] = binascii.unhexlify(self.pieces)
         if self.private:
-            torrent['info']['private'] = 1 
+            torrent['info']['private'] = 1
         torrent['info']['name'] = convert(self.name)
 
-        if len(self.files) > 1: #multi-file mode
+        if len(self.files) > 1:  # multi-file mode
             torrent['info']['files'] = convert(self.files)
 
-        else: #single file mode
+        else:  # single file mode
             torrent['info']['length'] = self.length
             torrent['info']['md5sum'] = convert(self.md5sum)
 
@@ -103,6 +118,7 @@ class Torrent(models.Model):
 
     def __unicode__(self):
         return self.name
+
 
 def convert(data):
     """ Converts unicode (or a dict/Mapping/Iterable containing unicode

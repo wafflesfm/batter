@@ -3,6 +3,11 @@ from django.views.generic import TemplateView
 
 from . import views
 
-urlpatterns = patterns('',
-    url(r'^list/$', views.NotificationList.as_view(), name="notifications_list"),
+urlpatterns = patterns(
+    '',
+    url(
+        r'^list/$',
+        views.NotificationList.as_view(),
+        name="notifications_list"
+    ),
 )

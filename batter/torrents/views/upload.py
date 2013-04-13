@@ -13,6 +13,7 @@ from django.views.generic import View, FormView
 from torrents.forms.torrent_upload import TorrentUploadForm
 from torrents.models import Torrent
 
+
 def upload_torrent(request):
     """
     Takes a torrent upload and parses/stores it
@@ -32,10 +33,13 @@ def upload_torrent(request):
                 pass
     return render(request, 'torrents/upload.html', {'form': form})
 
+
 def view_torrent(request, pk):
     torrent = get_object_or_404(Torrent, pk=pk)
 
-    return HttpResponse("PK is "+str(torrent.pk)+"<br />name is "+torrent.name)
+    return HttpResponse(
+        "PK is " + str(torrent.pk) + "<br />name is " + torrent.name
+    )
 
 
 class TorrentGenerate(View):
@@ -47,8 +51,13 @@ class TorrentGenerate(View):
         torrent = get_object_or_404(Torrent, pk=kwargs.get('pk'))
         torrent_file = StringIO.StringIO(torrent.to_bencoded_string())
 
-        response = HttpResponse(torrent_file.read(), content_type='application/x-bittorrent')
-        response['Content-Disposition'] = 'attachment; filename=' + slugify(torrent.name) + '.torrent'
+        response = HttpResponse(
+            torrent_file.read(),
+            content_type='application/x-bittorrent'
+        )
+        response['Content-Disposition'] = 'attachment; \
+                                           filename=' + \
+                                          slugify(torrent.name) + '.torrent'
         response['Content-Length'] = torrent_file.tell()
 
-        return response 
+        return response

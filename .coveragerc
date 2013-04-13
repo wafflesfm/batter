@@ -1,0 +1,4 @@
+[run]
+source = batter
+# try to omit migrations
+omit = batter/*/migrations/*
