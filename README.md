@@ -1,6 +1,8 @@
 Batter
 ======
 
+[![Build Status](https://travis-ci.org/wafflesfm/batter.png?branch=develop)](https://travis-ci.org/wafflesfm/batter)
+
 It makes Waffles (and other tasty things)!
 
 To develop on this project follow these steps:
