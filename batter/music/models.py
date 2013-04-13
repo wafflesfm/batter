@@ -1,49 +1,94 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 from model_utils.models import TimeStampedModel
+from taggit.managers import TaggableManager
+
+from torrents.models import Torrent
+
+
+FORMAT_TYPES = (
+    ('mp3', 'MP3'),
+    ('flac', 'FLAC'),
+    ('aac', 'AAC'),
+    ('ac3', 'AC3'),
+    ('dts', 'DTS'),
+)
+
+BITRATE_TYPES = (
+    ('192', '192'),
+    ('apsvbr', 'APS (VBR)'),
+    ('v2vbr', 'V2 (VBR)'),
+    ('v1vbr', 'V1 (VBR)'),
+    ('256', '256'),
+    ('apxvbr', 'APX (VBR)'),
+    ('v0vbr', 'V0 (VBR)'),
+    ('320', '320'),
+    ('lossless', 'Lossless'),
+    ('24bitlossless', '24Bit Losless'),
+    ('v8vbr', 'V8 (VBR)'),
+    ('other', 'Other'),
+
+)
+
+MEDIA_TYPES = (
+    ('cd', 'CD'),
+    ('dvd', 'DVD'),
+    ('vinyl', 'Vinyl'),
+    ('soundboard', 'Soundboard'),
+    ('sacd', 'SACD'),
+    ('dat', 'DAT'),
+    ('cassette', 'Cassette'),
+    ('web', 'WEB'),
+    ('bluray', 'Blu-Ray'),
+)
+
+RELEASE_TYPES = (
+    ('album', 'Album'),
+    ('soundtrack', 'Soundtrack'),
+    ('ep', 'EP'),
+    ('anthology', 'Anthology'),
+    ('compilation', 'Compilation'),
+    ('djmix', 'DJ Mix'),
+    ('Single', 'single'),
+    ('livealbum', 'Live Album'),
+    ('remix', 'Remix'),
+    ('bootleg','Bootleg'),
+    ('interview', 'Interview'),
+    ('mixtape', 'Mixtape'),
+    ('unknown', 'Unknown')
+)
+
+
+class MusicUpload(TimeStampedModel):
+    torrent = models.ForeignKey(Torrent)
+    release = models.ForeignKey('Release')
+    format = models.TextField(choices=FORMAT_TYPES)
+    bitrate = models.TextField(choices=BITRATE_TYPES)
+    media = models.TextField(choices=MEDIA_TYPES)
+    logfile = models.TextField(blank=True, null=True)
+    uploader = models.ForeignKey(User)
+
+    def __unicode__(self):
+        return self.release.name
 
 
 class Artist(TimeStampedModel):
-    mbid = models.TextField()
-    name = models.ForeignKey(
-        'ArtistName',
-        related_name="artist_name"
-    )
-    sort_name = models.ForeignKey(
-        'ArtistName',
-        related_name="artist_sort_name"
-    )
-    begin_date = models.DateField()
-    end_date = models.DateField(null=True, blank=True)
-    type = models.ForeignKey('ArtistType')
+    discogs_id = models.TextField()
+    name = models.TextField()
+    sort_name = models.SlugField()
+    related_artists = models.ManyToManyField('self', related_name="artist_related_artists", blank=True, null=True)
+    artist_type = models.ForeignKey('ArtistType')
     country = models.ForeignKey('Country')
-    gender = models.ForeignKey('ArtistGender')
-    disambiguation = models.TextField()
+    gender = models.TextField()
+    disambiguation = models.TextField(blank=True, null=True)
+    biography = models.TextField(blank=True, null=True)
+
+    birthdate = models.DateField(blank=True, null=True)
+    deathdate = models.DateField(blank=True, null=True)
 
     def __unicode__(self):
         return str(self.name)
-
-
-class ArtistCredit(models.Model):
-    name = models.ForeignKey('ArtistName')
-    artists = models.ManyToManyField('Artist')
-
-    def __unicode__(self):
-        return str(self.name)
-
-
-class ArtistGender(models.Model):
-    name = models.TextField()
-
-    def __unicode__(self):
-        return self.name
-
-
-class ArtistName(models.Model):
-    name = models.TextField()
-
-    def __unicode__(self):
-        return self.name
 
 
 class ArtistType(models.Model):
@@ -51,6 +96,14 @@ class ArtistType(models.Model):
 
     def __unicode__(self):
         return self.name
+
+
+class ArtistAlias(models.Model):
+    alias = models.TextField()
+    artist = models.ForeignKey('Artist')
+
+    def __unicode__(self):
+        return self.alias
 
 
 class Country(models.Model):
@@ -62,46 +115,15 @@ class Country(models.Model):
 
 
 class Release(TimeStampedModel):
-    mbid = models.TextField()
-    name = models.ForeignKey('ReleaseName')
-    artist_credit = models.ForeignKey('ArtistCredit')
-    group = models.ForeignKey('ReleaseGroup')
-#    status = models.ForeignKey('ReleaseStatus')
-#    packaging = models.ForeignKey('ReleasePackaging')
+    discogs_id = models.TextField()
+    name = models.TextField()
+    artist_credit = models.ManyToManyField('Artist')
     country = models.ForeignKey('Country')
     date = models.DateField()
     barcode = models.TextField()
     comment = models.TextField()
+    release_type = models.TextField(choices=RELEASE_TYPES)
+    tags = TaggableManager()
 
     def __unicode__(self):
         return str(self.name)
-
-
-class ReleaseName(models.Model):
-    name = models.TextField()
-
-    def __unicode__(self):
-        return self.name
-
-
-#class ReleasePackaging(models.Model):
-#    name = models.TextField()
-
-
-#class ReleaseStatus(models.Model):
-#    name = models.TextField()
-
-
-class ReleaseGroup(TimeStampedModel):
-    mbid = models.TextField()
-    name = models.ForeignKey('ReleaseName')
-    credit = models.ForeignKey('ArtistCredit')
-#    type = models.ForeignKey('ReleaseGroupPrimaryType')
-    comment = models.TextField()
-
-    def __unicode__(self):
-        return str(self.name)
-
-
-#class ReleaseGroupPrimaryType(models.Model):
-#    name = models.TextField()
