@@ -1,4 +1,5 @@
-from django.views.generic import View
+import json
+
 from django.http import HttpResponse
 from django.conf import settings
 
@@ -12,7 +13,10 @@ else:
 
 
 def json_response(data):
-    return HttpResponse(json.dumps(data), content_type="application/json; charset=utf8")
+    return HttpResponse(
+        json.dumps(data),
+        content_type="application/json; charset=utf8"
+    )
 
 
 def get_artist(request, artist_id):

@@ -1,4 +1,3 @@
-import json
 import requests
 
 
@@ -44,7 +43,7 @@ class DiscogsAPI(object):
     def search_release(self, query, page=1):
         return self.search_request(query, search_type='release', page=page)
 
-    def get_artist(self, artist_id):
+    def get_artist(self, artist_id, page=1):
         return self.make_request('/artists/%s' % artist_id, page=page)
 
     def get_release(self, release_id):
@@ -53,7 +52,8 @@ class DiscogsAPI(object):
     def get_releases(self, artist_id, page=1):
         """
         Generator to fetch all releases for given `artist_id`
-        ``get_releases(45).next()`` returns a generator for all pages of releases
+        ``get_releases(45).next()`` returns a generator
+        for all pages of releases
         takes options page argument for starting page
         """
         page += 1
@@ -62,7 +62,10 @@ class DiscogsAPI(object):
 
         while page < releases['pagination']['pages']:
             params = {'page': page}
-            yield self.make_request('/artists/%s/releases' % artist_id, **params)['releases']
+            yield self.make_request(
+                '/artists/%s/releases' % artist_id,
+                **params
+            )['releases']
             page += 1
 
 

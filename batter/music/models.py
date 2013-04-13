@@ -53,7 +53,7 @@ RELEASE_TYPES = (
     ('Single', 'single'),
     ('livealbum', 'Live Album'),
     ('remix', 'Remix'),
-    ('bootleg','Bootleg'),
+    ('bootleg', 'Bootleg'),
     ('interview', 'Interview'),
     ('mixtape', 'Mixtape'),
     ('unknown', 'Unknown')
@@ -77,7 +77,12 @@ class Artist(TimeStampedModel):
     discogs_id = models.TextField()
     name = models.TextField()
     sort_name = models.SlugField()
-    related_artists = models.ManyToManyField('self', related_name="artist_related_artists", blank=True, null=True)
+    related_artists = models.ManyToManyField(
+        'self',
+        related_name="artist_related_artists",
+        blank=True,
+        null=True
+    )
     artist_type = models.ForeignKey('ArtistType')
     country = models.ForeignKey('Country')
     gender = models.TextField()
