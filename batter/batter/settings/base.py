@@ -209,11 +209,8 @@ THIRD_PARTY_APPS = (
     'account',
     'django_extensions',
     'django_forms_bootstrap',
-<<<<<<< HEAD
     'notification',
-=======
     'taggit'
->>>>>>> feature/discogs-api
 )
 
 # Apps specific for this project go here.
