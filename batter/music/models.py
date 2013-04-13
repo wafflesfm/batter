@@ -20,7 +20,7 @@ class Artist(TimeStampedModel):
     gender = models.ForeignKey('ArtistGender')
     disambiguation = models.TextField()
 
-    def __str__(self):
+    def __unicode__(self):
         return str(self.name)
 
 
@@ -28,28 +28,28 @@ class ArtistCredit(models.Model):
     name = models.ForeignKey('ArtistName')
     artists = models.ManyToManyField('Artist')
 
-    def __str__(self):
+    def __unicode__(self):
         return str(self.name)
 
 
 class ArtistGender(models.Model):
     name = models.TextField()
 
-    def __str__(self):
+    def __unicode__(self):
         return self.name
 
 
 class ArtistName(models.Model):
     name = models.TextField()
 
-    def __str__(self):
+    def __unicode__(self):
         return self.name
 
 
 class ArtistType(models.Model):
     name = models.TextField()
 
-    def __str__(self):
+    def __unicode__(self):
         return self.name
 
 
@@ -57,7 +57,7 @@ class Country(models.Model):
     name = models.TextField()
     code = models.TextField()
 
-    def __str__(self):
+    def __unicode__(self):
         return "{} ({})".format(self.name, self.code)
 
 
@@ -73,14 +73,14 @@ class Release(TimeStampedModel):
     barcode = models.TextField()
     comment = models.TextField()
 
-    def __str__(self):
+    def __unicode__(self):
         return str(self.name)
 
 
 class ReleaseName(models.Model):
     name = models.TextField()
 
-    def __str__(self):
+    def __unicode__(self):
         return self.name
 
 
@@ -99,7 +99,7 @@ class ReleaseGroup(TimeStampedModel):
 #    type = models.ForeignKey('ReleaseGroupPrimaryType')
     comment = models.TextField()
 
-    def __str__(self):
+    def __unicode__(self):
         return str(self.name)
 
 

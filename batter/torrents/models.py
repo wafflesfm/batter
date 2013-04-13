@@ -1,12 +1,8 @@
-import base64
 import bencode
 import binascii
 import collections
-import json
 
 from django.db import models
-from django.contrib.auth.models import User
-from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.core.validators import EMPTY_VALUES
 
@@ -107,12 +103,13 @@ class Torrent(models.Model):
             torrent['info']['private'] = 1
         torrent['info']['name'] = convert(self.name)
 
-        if len(self.files) > 1:  # multi-file mode
+        if self.files is not None and len(self.files) > 1:  # multi-file mode
             torrent['info']['files'] = convert(self.files)
 
         else:  # single file mode
             torrent['info']['length'] = self.length
-            torrent['info']['md5sum'] = convert(self.md5sum)
+            if self.md5sum is not None:
+                torrent['info']['md5sum'] = convert(self.md5sum)
 
         return bencode.bencode(torrent)
 
@@ -123,7 +120,7 @@ class Torrent(models.Model):
 def convert(data):
     """ Converts unicode (or a dict/Mapping/Iterable containing unicode
     strings) to str. """
-    if isinstance(data, unicode):
+    if isinstance(data, basestring):
         return str(data)
     elif isinstance(data, collections.Mapping):
         return dict(map(convert, data.iteritems()))

@@ -1,4 +1,3 @@
-import hashlib
 import uuid
 
 from django.contrib.auth.models import User
@@ -7,7 +6,7 @@ from django.db import models
 
 class Profile(models.Model):
     user = models.ForeignKey(User, unique=True)
-    trackerid = models.CharField(max_length=25, blank=True, null=True)
+    trackerid = models.CharField(max_length=32, blank=True, null=True)
 
     def save(self, *args, **kwargs):
         """
@@ -15,22 +14,22 @@ class Profile(models.Model):
         for torrent tracker url generation
         """
 
-        if not trackerid:
-            trackerid = generate_trackerid()
+        if not self.trackerid:
+            self.trackerid = generate_trackerid()
         super(Profile, self).save(*args, **kwargs)
 
     def __unicode__(self):
         return self.user.username
 
 
-#helpers
+# helpers
 def generate_trackerid():
     """
     generate a uuid and check if it already exists in a profile
     """
 
-    trackerid = uuid.uuid1().hex
-    if Profile.objects.filter(trackerid=trackerid).exists():
-        generate_trackerid()
-    else:
-        return trackerid
+    trackerid = None
+    while trackerid is None or \
+            Profile.objects.filter(trackerid=trackerid).exists():
+        trackerid = uuid.uuid4().hex
+    return trackerid

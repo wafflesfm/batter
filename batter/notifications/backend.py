@@ -16,12 +16,12 @@ class ModelBackend(backends.BaseBackend):
         })
         context.update(extra_context)
 
-        messages = self.get_formatted_message({
+        messages = self.get_formatted_messages((
             "short.txt",
             "full.txt",
             "short.html",
             "full.html"
-        }, notice_type.label, context)
+        ), notice_type.label, context)
 
         notification = models.Notification()
         notification.recipient = recipient
