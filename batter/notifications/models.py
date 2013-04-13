@@ -9,7 +9,7 @@ class NotificationQuerySet(QuerySet):
         return self.update(seen_at=now())
 
     def unseen(self):
-        return self.exclude(seen_at=None)
+        return self.filter(seen_at=None)
 
 
 class NotificationManager(models.Manager):
