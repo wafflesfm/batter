@@ -6,9 +6,11 @@ from notification.models import NoticeType
 from ..backend import ModelBackend
 from ..models import Notification
 
+
 class StubbedModelBackend(ModelBackend):
     def get_formatted_messages(self, templates, label, context):
         return dict(zip(templates, ['message'] * len(templates)))
+
 
 class ModelBackendTests(TestCase):
     def setUp(self):

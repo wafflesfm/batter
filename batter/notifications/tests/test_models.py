@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 
 from ..models import Notification
 
+
 class NotificationTests(TestCase):
     def setUp(self):
         self.samantha = User.objects.create_user(

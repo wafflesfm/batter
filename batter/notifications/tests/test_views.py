@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 
 from ..models import Notification
 
+
 class BaseNotificationTests(TestCase):
     def setUp(self):
         self.samantha = User.objects.create_user(
@@ -36,6 +37,7 @@ class BaseNotificationTests(TestCase):
 
     def login(self):
         self.client.login(username='samantha', password='soliloquy')
+
 
 class NotificationAPITests(BaseNotificationTests):
     def fetch_list_response(self):
@@ -70,6 +72,7 @@ class NotificationAPITests(BaseNotificationTests):
         self.assertEquals(len(data['results']), 1)
         result = data['results'][0]
         self.assertEquals(result['seen'], False)
+
 
 class NotificationHTMLTests(BaseNotificationTests):
     def fetch_list_response(self, data={}):
