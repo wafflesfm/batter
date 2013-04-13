@@ -196,7 +196,7 @@ DJANGO_APPS = (
     'django.contrib.staticfiles',
 
     # Useful template tags:
-    # 'django.contrib.humanize',
+    'django.contrib.humanize',
 
     # Admin panel and documentation:
     'django.contrib.admin',
@@ -210,7 +210,8 @@ THIRD_PARTY_APPS = (
     'django_extensions',
     'django_forms_bootstrap',
     'notification',
-    'taggit'
+    'taggit',
+    'postman'
 )
 
 # Apps specific for this project go here.
@@ -271,3 +272,8 @@ NOTIFICATION_BACKENDS = [
     ("model", "notifications.backend.ModelBackend"),
 ]
 ########## END django-notification CONFIGURATION
+
+########## django-postman (inter-user messaging) CONFIGURATION
+POSTMAN_DISALLOW_ANONYMOUS = True
+POSTMAN_AUTO_MODERATE_AS = True
+########## END django-postman (inter-user messaging) CONFIGURATION

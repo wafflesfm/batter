@@ -6,10 +6,10 @@ from django.utils.timezone import now
 
 class NotificationQuerySet(QuerySet):
     def mark_seen(self):
-        return self.update(seen=True, seen_at=now())
+        return self.update(seen_at=now())
 
     def unseen(self):
-        return self.filter(seen=False)
+        return self.filter(seen_at=None)
 
 
 class NotificationManager(models.Manager):
@@ -31,7 +31,6 @@ class Notification(models.Model):
     title_text = models.TextField(blank=True, null=False)
     body_text = models.TextField(blank=True, null=False)
 
-    seen = models.BooleanField(default=False)
     sent_at = models.DateTimeField(auto_now_add=True)
     seen_at = models.DateTimeField(null=True)
 
@@ -39,12 +38,10 @@ class Notification(models.Model):
 
     def mark_seen(self):
         """ Mark a Notification as having been seen """
-        self.seen = True
         self.seen_at = now()
         return self
 
-    @property
-    def as_object(self):
+    def as_dict(self):
         """ Prepare a Notification for display, via e.g. JSON """
         return {
             "text": {
@@ -58,3 +55,10 @@ class Notification(models.Model):
             "seen": self.seen,
             "sent_at": self.sent_at,
         }
+
+    @property
+    def seen(self):
+        return self.seen_at is not None
+
+    class Meta:
+        ordering = ['-sent_at']

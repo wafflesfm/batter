@@ -8,7 +8,7 @@ from . import models
 class ModelBackend(backends.BaseBackend):
     spam_sensitivity = 1
 
-    def deliver(self, recipient, notice_type, extra_context):
+    def deliver(self, recipient, sender, notice_type, extra_context):
         context = self.default_context()
         context.update({
             "recipient": recipient,

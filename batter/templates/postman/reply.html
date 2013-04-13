@@ -1,0 +1,13 @@
+{% extends "postman/base_write.html" %}
+{% load i18n %}
+{% block pm_write_title %}{% trans "Reply"%}{% endblock %}
+{% block pm_write_recipient %}
+<div class="control-group">
+    <label class="control-label">
+        Recipient
+    </label>
+    <div class="controls recipient-label">
+        {{ recipient }}
+    </div>
+</div>
+{% endblock %}
