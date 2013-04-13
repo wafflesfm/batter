@@ -1,13 +1,13 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-from model_utils.models import TimeStampedModel, Choices
-from taggit.managers import TaggableManager()
+from model_utils.models import TimeStampedModel
+from taggit.managers import TaggableManager
 
-from torrents.model import Torrent
+from torrents.models import Torrent
 
 
-FORMAT_TYPES = Choices(
+FORMAT_TYPES = (
     ('mp3', 'MP3'),
     ('flac', 'FLAC'),
     ('aac', 'AAC'),
@@ -15,7 +15,7 @@ FORMAT_TYPES = Choices(
     ('dts', 'DTS'),
 )
 
-BITRATE_TYPES = Choices(
+BITRATE_TYPES = (
     ('192', '192'),
     ('apsvbr', 'APS (VBR)'),
     ('v2vbr', 'V2 (VBR)'),
@@ -31,7 +31,7 @@ BITRATE_TYPES = Choices(
 
 )
 
-MEDIA_TYPES = Choices(
+MEDIA_TYPES = (
     ('cd', 'CD'),
     ('dvd', 'DVD'),
     ('vinyl', 'Vinyl'),
@@ -124,16 +124,6 @@ class Release(TimeStampedModel):
     comment = models.TextField()
     release_type = models.TextField(choices=RELEASE_TYPES)
     tags = TaggableManager()
-
-    def __unicode__(self):
-        return str(self.name)
-
-
-class ReleaseGroup(TimeStampedModel):
-    mbid = models.TextField()
-    name = models.ForeignKey('ReleaseName')
-    credit = models.ForeignKey('ArtistCredit')
-    comment = models.TextField()
 
     def __unicode__(self):
         return str(self.name)
