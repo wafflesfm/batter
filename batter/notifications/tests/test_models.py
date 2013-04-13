@@ -67,8 +67,8 @@ class NotificationTests(TestCase):
 
         self.assertEquals(self.samantha_mail.seen, True)
 
-    def test_model_as_object(self):
-        obj = self.samantha_mail.as_object
+    def test_model_as_dict(self):
+        obj = self.samantha_mail.as_dict()
         self.assertIn("text", obj)
         self.assertIn("html", obj)
         self.assertIn("seen", obj)

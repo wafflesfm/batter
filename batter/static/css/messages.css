@@ -1,0 +1,13 @@
+#pm_by_modes {
+    margin-bottom: 1em;
+}
+.pm_header {
+    color: #777;
+    border-bottom: 1px solid #eee;
+}
+.recipient-label {
+    padding-top: 5px;
+}
+input[type="text"], textarea {
+    width: 100%;
+}
