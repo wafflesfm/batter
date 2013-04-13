@@ -1,9 +1,9 @@
-import os.path
 import hashlib
 
 from django.test import TestCase
 
 from .. import models
+from . import TEST_FILE_PATH
 
 Torrent = models.Torrent
 
@@ -15,13 +15,7 @@ class TorrentTests(TestCase):
         return sha.hexdigest()
 
     def test_from_torrent_file(self):
-        with open(
-            os.path.join(
-                os.path.dirname(os.path.abspath(__file__)),
-                'archlinux-2013.04.01-dual.iso.torrent'
-            ),
-            'rb'
-        ) as test_file:
+        with open(TEST_FILE_PATH, 'rb') as test_file:
             torrent = Torrent.from_torrent_file(test_file)
             test_file.seek(0)
             orig_torrent_str = test_file.read()

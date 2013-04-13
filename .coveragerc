@@ -1,4 +1,9 @@
 [run]
 source = batter
 # try to omit migrations
-omit = batter/*/migrations/*
+omit = batter/*/migrations/*,batter/batter/settings/*,batter/batter/wsgi*
+
+[report]
+exclude_lines =
+    pragma: no cover
+    def __unicode__

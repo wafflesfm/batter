@@ -1,14 +1,9 @@
-import json
-import binascii
 import cStringIO as StringIO
 
-from bencode import *
-
-from django.core.servers.basehttp import FileWrapper
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.defaultfilters import slugify
-from django.views.generic import View, FormView
+from django.views.generic import View
 
 from torrents.forms.torrent_upload import TorrentUploadForm
 from torrents.models import Torrent
@@ -55,8 +50,8 @@ class TorrentGenerate(View):
             torrent_file.read(),
             content_type='application/x-bittorrent'
         )
-        response['Content-Disposition'] = 'attachment; \
-                                           filename=' + \
+        response['Content-Disposition'] = 'attachment; ' + \
+                                          'filename=' + \
                                           slugify(torrent.name) + '.torrent'
         response['Content-Length'] = torrent_file.tell()
 
