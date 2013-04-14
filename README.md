@@ -3,6 +3,8 @@ Batter
 
 It makes Waffles (and other tasty things)!
 
+[![Build Status](https://travis-ci.org/wafflesfm/batter.png?branch=develop)](https://travis-ci.org/wafflesfm/batter) [![Coverage Status](https://coveralls.io/repos/wafflesfm/batter/badge.png?branch=develop)](https://coveralls.io/r/wafflesfm/batter)
+
 To develop on this project follow these steps:
 
 1. Download the code
@@ -34,7 +36,7 @@ folder:
 
 Your terminal prompt should now look like this:
 
-    (venv) $ 
+    (venv) $
 
 Install Dependencies
 --------------------

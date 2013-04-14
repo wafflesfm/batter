@@ -1,6 +1,5 @@
 import json
 
-from django.views.generic import View
 from django.http import HttpResponse
 from django.conf import settings
 
@@ -14,7 +13,10 @@ except AttributeError:
 
 
 def json_response(data):
-    return HttpResponse(json.dumps(data), content_type="application/json; charset=utf8")
+    return HttpResponse(
+        json.dumps(data),
+        content_type="application/json; charset=utf8"
+    )
 
 
 def get_artist(request, artist_id):

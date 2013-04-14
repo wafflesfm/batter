@@ -33,7 +33,7 @@ class NotificationList(
 
         next_p = page.next_page_number() if page.has_next() else None
         prev_p = page.previous_page_number() if page.has_previous() else None
-        object_list = [o.as_object for o in object_list]
+        object_list = [o.as_dict() for o in object_list]
         return self.render_json_response({
             'total': paginator.count,
             'pages': {

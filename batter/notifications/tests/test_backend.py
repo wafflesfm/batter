@@ -30,6 +30,7 @@ class ModelBackendTests(TestCase):
     def test_deliver(self):
         self.backend.deliver(
             recipient=self.samantha,
+            sender=None,
             notice_type=self.new_message,
             extra_context={}
         )
