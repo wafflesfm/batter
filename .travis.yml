@@ -2,7 +2,10 @@ language: python
 python:
   - "2.7"
 install:
-  - pip install -r requirements/test.txt --index-url=https://simple.crate.io
+  - wget -O /home/travis/cache.tar.gz https://github.com/senturio/batter-packages-cache/archive/master.tar.gz
+  - tar -xvzf /home/travis/cache.tar.gz
+  - bash batter-packages-cache-master/install_these.sh
+#  - pip install -r requirements/test.txt --index-url=https://simple.crate.io
   - pip install coveralls --index-url=https://simple.crate.io
 script:
   - coverage run batter/manage.py test --settings=batter.settings.test
