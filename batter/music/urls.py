@@ -19,18 +19,18 @@ urlpatterns = patterns(
         name="discogs_get_artist_releases"
     ),
     url(
-        r'api/discogs/search/artist/(?P<query>\w+)/$',
+        r'api/discogs/search/artist/$',
         'music.views.api.discogs.search_artist',
         name="discogs_search_artist"
     ),
     url(
-        r'api/discogs/search/release/(?P<query>\w+)/$',
+        r'api/discogs/search/release/$',
         'music.views.api.discogs.search_release',
         name="discogs_search_releases"
     ),
     url(
-        r'api/discogs/search/(?P<query>\w+)/$',
+        r'api/discogs/search/$',
         'music.views.api.discogs.search_discogs',
-        name="discogs_get_artist"
+        name="discogs_search"
     ),
 )

@@ -11,6 +11,10 @@ class DiscogsAPI(object):
         self.user_agent = user_agent
 
     def make_request(self, path, **params):
+        """
+        sets user-agent for discogs request and returns a python dict
+        from the json response
+        """
         url = self.base_url + path
         headers = {
             'User-Agent': self.user_agent
@@ -20,6 +24,9 @@ class DiscogsAPI(object):
         return request.json()
 
     def search_request(self, query, search_type=None, page=1):
+        """
+        uses make_request to return a generator of paginated responses from discogs
+        """
         page += 1
         params = {'q': query}
 
@@ -27,11 +34,11 @@ class DiscogsAPI(object):
             params['type'] = search_type
 
         search = self.make_request('/database/search', **params)
-        yield search['results']
+        yield search
 
         while page < search['pagination']['pages']:
             params['page'] = page
-            yield self.make_request('/database/search', **params)['results']
+            yield self.make_request('/database/search', **params)
             page += 1
 
     def search(self, query, page=1):
@@ -58,14 +65,14 @@ class DiscogsAPI(object):
         """
         page += 1
         releases = self.make_request('/artists/%s/releases' % artist_id)
-        yield releases['releases']
+        yield releases
 
         while page < releases['pagination']['pages']:
             params = {'page': page}
             yield self.make_request(
                 '/artists/%s/releases' % artist_id,
                 **params
-            )['releases']
+            )
             page += 1
 
 
