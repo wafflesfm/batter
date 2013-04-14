@@ -16,3 +16,7 @@ DATABASES = {
         "PORT": "",
     },
 }
+
+INSTALLED_APPS += (
+    'torrents_inheritance_tests',
+)

@@ -5,8 +5,13 @@ import collections
 from django.db import models
 from django.core.urlresolvers import reverse
 from django.core.validators import EMPTY_VALUES
+from django.conf import settings
 
+from model_utils.models import TimeStampedModel
+from taggit.managers import TaggableManager
 from jsonfield import JSONField
+
+from . import managers
 
 optional = {'null': True, 'blank': True}
 
@@ -115,6 +120,62 @@ class Torrent(models.Model):
 
     def __unicode__(self):
         return self.name
+
+
+class InheritingModel(models.Model):
+    _child_name = models.CharField(max_length=100, editable=False)
+
+    objects = managers.InheritingManager()
+    base_objects = models.Manager()
+
+    def save(self, *args, **kwargs):
+        # NB: based on http://djangosnippets.org/snippets/1037/
+        self._child_name = self.get_child_name()
+        super(InheritingModel, self).save(*args, **kwargs)
+
+    def get_child_name(self):
+        if type(self) is self.get_parent_model():
+            return self._child_name
+        return self.get_parent_link().related_query_name()
+
+    def get_child_object(self):
+        return getattr(self, self.get_child_name())
+
+    def get_parent_link(self):
+        return self._meta.parents[self.get_parent_model()]
+
+    def get_parent_model(self):
+        raise NotImplementedError
+
+    def get_parent_object(self):
+        return getattr(self, self.get_parent_link().name)
+
+    class Meta:
+        abstract = True
+
+
+class Upload(InheritingModel, TimeStampedModel):
+    torrent = models.OneToOneField(
+        Torrent,
+        related_name='upload',
+        null=False
+    )
+    uploader = models.ForeignKey(settings.AUTH_USER_MODEL, null=False)
+    parent = models.ForeignKey(
+        'TorrentGroup',
+        null=False,
+        related_name='uploads'
+    )
+
+    def get_parent_model(self):
+        return Upload
+
+
+class TorrentGroup(InheritingModel, TimeStampedModel):
+    tags = TaggableManager()
+
+    def get_parent_model(self):
+        return TorrentGroup
 
 
 def convert(data):
