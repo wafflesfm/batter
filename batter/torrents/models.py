@@ -144,7 +144,9 @@ class InheritingModel(models.Model):
     def get_parent_link(self):
         return self._meta.parents[self.get_parent_model()]
 
-    def get_parent_model(self):
+    def get_parent_model(self):  # pragma: no cover
+        # this method is excluded from coverage purely because it should never
+        # be run. at all. it's only here so you know you have to override it.
         raise NotImplementedError
 
     def get_parent_object(self):

@@ -83,6 +83,12 @@ class UploadTests(BaseTestCase):
         eu = models.ExcitingUpload.objects.get(torrent=self.ex_torrent2)
         self.assertEquals(eu.is_exciting, True)
 
+    def test_subclass_to_parent(self):
+        eu = torrents.models.Upload.objects.get(torrent=self.ex_torrent2)
+        self.assertIsInstance(eu, models.ExcitingUpload)
+        eu_parent = eu.get_parent_object()
+        self.assertIsInstance(eu_parent, torrents.models.Upload)
+
 
 class TorrentGroupTests(BaseTestCase):
     def test_can_get_parent(self):
@@ -131,3 +137,11 @@ class TorrentGroupTests(BaseTestCase):
             uploads__torrent=self.ex_torrent2
         )
         self.assertEquals(eg.is_exciting, True)
+
+    def test_subclass_to_parent(self):
+        eg = torrents.models.TorrentGroup.objects.get(
+            uploads=self.exciting_upload
+        )
+        self.assertIsInstance(eg, models.ExcitingGroup)
+        eg_parent = eg.get_parent_object()
+        self.assertIsInstance(eg_parent, torrents.models.TorrentGroup)
