@@ -1,10 +1,12 @@
 from django.contrib import admin
 
-from . import models
+from music.models import MusicUpload, Artist, ArtistType, ArtistAlias, \
+    Country, Release
 
-admin.site.register(models.Artist)
-admin.site.register(models.ArtistAlias)
-admin.site.register(models.ArtistType)
-admin.site.register(models.Country)
-admin.site.register(models.Release)
-admin.site.register(models.MusicUpload)
+
+admin.site.register(Artist)
+admin.site.register(Release)
+admin.site.register(MusicUpload)
+admin.site.register(ArtistType)
+admin.site.register(ArtistAlias)
+admin.site.register(Country)

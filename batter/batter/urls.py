@@ -15,7 +15,7 @@ urlpatterns = patterns(
     url(r'^messages/', include('postman.urls')),
     url(r'^admin/', include(admin.site.urls)),
     url(r"^account/", include("account.urls")),
-
     url(r"^notifications/", include("notifications.urls")),
     url(r'^torrents/', include("torrents.urls")),
+    url(r'^music/', include("music.urls"))
 )
