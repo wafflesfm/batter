@@ -25,7 +25,7 @@ class DiscogsAPI(object):
 
     def search_request(self, query, search_type=None, page=1):
         """
-        uses make_request to return a generator of paginated responses 
+        uses make_request to return a generator of paginated responses
         from discogs
         """
         page += 1

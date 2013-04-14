@@ -9,7 +9,7 @@ class TestDiscogsAPI(TestCase):
 
     def setUp(self):
         self.client.login(username='vagrant', password='vagrant')
- 
+
     def test_get_artist(self):
         resp = json.loads(
             self.client.get(
@@ -29,8 +29,8 @@ class TestDiscogsAPI(TestCase):
     def test_get_artist_releases(self):
         resp = json.loads(
             self.client.get(
-                reverse('discogs_get_artist_releases', 
-                    kwargs={'artist_id': 42})
+                reverse('discogs_get_artist_releases',
+                        kwargs={'artist_id': 42})
             ).content
         )
         self.assertEqual(resp['releases'][0]['type'], 'release')
