@@ -58,3 +58,11 @@ class TestDiscogsAPI(TestCase):
             reverse('discogs_search'), {'q': 'radio head', 'page': 2}
         ).status_code
         self.assertEqual(resp, 200)
+
+    def test_releases_pagination(self):
+        resp = self.client.get(
+            reverse('discogs_get_artist_releases',
+                    kwargs={'artist_id': 42}),
+            {'page': 1}
+        ).status_code
+        self.assertEqual(resp, 200)
