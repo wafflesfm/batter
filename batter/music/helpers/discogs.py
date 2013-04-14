@@ -45,7 +45,7 @@ class DiscogsAPI(object):
         return self.search_request(query, search_type='release', page=page)
 
     def get_artist(self, artist_id):
-        return self.make_request('/artists/%s' % artist_id, page=page)
+        return self.make_request('/artists/%s' % artist_id)
 
     def get_release(self, release_id):
         return self.make_request('/releases/%s' % release_id)

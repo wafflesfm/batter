@@ -9,12 +9,9 @@ urlpatterns = patterns(
     '',
     url(r'^$', TemplateView.as_view(template_name='index.html'), name="home"),
 
-    # Examples:
-    # url(r'^$', 'batter.views.home', name='home'),
-    # url(r'^batter/', include('batter.foo.urls')),
-
     url(r"^notifications/", include("notifications.urls")),
     url(r"^account/", include("account.urls")),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^torrents/', include("torrents.urls")),
+    url(r'^music/', include("music.urls"))
 )

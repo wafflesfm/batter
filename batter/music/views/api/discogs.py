@@ -1,3 +1,5 @@
+import json
+
 from django.views.generic import View
 from django.http import HttpResponse
 from django.conf import settings
@@ -5,9 +7,9 @@ from django.conf import settings
 from music.helpers.discogs import DiscogsAPI
 
 
-if settings.DISCOGS_USERAGENT:
+try:
     discog = DiscogsAPI(user_agent=settings.DISCOGS_USERAGENT)
-else:
+except AttributeError:
     discog = DiscogsAPI()
 
 
