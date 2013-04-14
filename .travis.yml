@@ -15,7 +15,7 @@ after_success:
 notifications:
   webhooks:
     urls:
-      - http://batterbetterbotter.herokuapp.com/hubot/travis/?room=%23batter,batter
+      - http://batterbetterbotter.herokuapp.com/hubot/travis?room=%23batter,batter
     on_success: always
     on_failure: always
     on_start: true
