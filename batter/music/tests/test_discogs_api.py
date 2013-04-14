@@ -5,11 +5,11 @@ from django.core.urlresolvers import reverse
 
 
 class TestDiscogsAPI(TestCase):
-    fixtures = ['test_user.json',]
+    fixtures = ['test_user.json', ]
 
     def setUp(self):
         self.client.login(username='vagrant', password='vagrant')
-    
+ 
     def test_get_artist(self):
         resp = json.loads(
             self.client.get(
@@ -24,12 +24,13 @@ class TestDiscogsAPI(TestCase):
                 reverse('discogs_get_release', kwargs={'release_id': 42})
             ).content
         )
-        self.assertEqual(str(resp['id']), '42') 
+        self.assertEqual(str(resp['id']), '42')
 
     def test_get_artist_releases(self):
         resp = json.loads(
             self.client.get(
-                reverse('discogs_get_artist_releases', kwargs={'artist_id': 42})
+                reverse('discogs_get_artist_releases', 
+                    kwargs={'artist_id': 42})
             ).content
         )
         self.assertEqual(resp['releases'][0]['type'], 'release')
