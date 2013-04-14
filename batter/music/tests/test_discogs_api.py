@@ -3,12 +3,15 @@ import json
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 
+from music.helpers.discogs import DiscogsAPI
+
 
 class TestDiscogsAPI(TestCase):
     fixtures = ['test_user.json', ]
 
     def setUp(self):
         self.client.login(username='vagrant', password='vagrant')
+        self.discogs = DiscogsAPI()
 
     def test_get_artist(self):
         resp = json.loads(
@@ -66,3 +69,13 @@ class TestDiscogsAPI(TestCase):
             {'page': 3}
         ).status_code
         self.assertEqual(resp, 200)
+
+    def test_releases_generator(self):
+        releases = self.discogs.get_releases(99731)
+        self.assertEqual(releases.next()['pagination']['page'], 1)
+        self.assertEqual(releases.next()['pagination']['page'], 2)
+
+    def test_search_generator(self):
+        search = self.discogs.search('radio head')
+        self.assertEqual(search.next()['pagination']['page'], 1)
+        self.assertEqual(search.next()['pagination']['page'], 2)
