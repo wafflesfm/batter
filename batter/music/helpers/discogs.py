@@ -26,7 +26,9 @@ class DiscogsAPI(object):
         """uses make_request to return a generator of paginated responses
         from discogs
         """
+        page = int(page)
         page += 1
+
         params = {'q': query}
 
         if search_type:
@@ -63,7 +65,9 @@ class DiscogsAPI(object):
 
         takes options page argument for starting page
         """
+        page = int(page)
         page += 1
+
         releases = self.make_request('/artists/{0}/releases'.format(artist_id))
         yield releases
 
@@ -74,9 +78,3 @@ class DiscogsAPI(object):
                 **params
             )
             page += 1
-
-
-if __name__ == '__main__':
-    d = DiscogsAPI()
-    search = d.search_release('window licker')
-    print search.next()[0]['id']

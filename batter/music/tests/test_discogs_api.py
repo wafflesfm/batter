@@ -52,3 +52,9 @@ class TestDiscogsAPI(TestCase):
             reverse('discogs_search_artist'), {'q': 'radio head'}
         ).status_code
         self.assertEqual(resp, 200)
+
+    def test_search_pagination(self):
+        resp = self.client.get(
+            reverse('discogs_search'), {'q': 'radio head', 'page': 2}
+        ).status_code
+        self.assertEqual(resp, 200)
