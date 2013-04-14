@@ -14,6 +14,11 @@ To develop on this project follow these steps:
 5. Run Batter
 6. Contribute changes!
 
+If you're familiar with [Vagrant](http://www.vagrantup.com/), then simply
+check the code out, `cd vagrant`, then `vagrant up` and you'll have a
+working development environment. You'll still need to perform steps 4 and 5
+from inside the `vagrant ssh` shell.
+
 Download the code
 -----------------
 
@@ -48,7 +53,7 @@ In your terminal, type
 You should see a list of packages being downloaded and installed.
 
 Create the Database Schema
-----------------------------
+--------------------------
 
 In your terminal, type
 
@@ -108,3 +113,11 @@ ones. The following articles should help you understand how git-flow works.
 
 * http://qq.is/article/git-flow-on-github - using git-flow in tandem with
   GitHub pull requests.
+
+It is *strongly recommended* that
+even committers who have access to the repository use GitHub pull requests
+to merge their code. If you do this, then our
+[code testing](https://travis-ci.org/wafflesfm/batter) and
+[code coverage](https://coveralls.io/r/wafflesfm/batter) tools will
+automatically tell you if what you are about to merge is going to break
+everything, and will automatically remind you to write any necessary tests.
