@@ -47,7 +47,7 @@ class Torrent(models.Model):
     length = models.PositiveIntegerField(blank=True, null=True,
         help_text=_("Length of the file contents in bytes, missing for "
                     "multi-file torrents."))
-    md5sum = models.TextField(blank=True, null=True,
+    md5sum = models.CharField(blank=True, null=True, max_length=32,
         help_text=_("MD5 hash of the file contents (single-file torrent only)."))
     files = JSONField(blank=True, null=True,
         help_text=_("A list of {name, length, md5sum} dicts corresponding to "
