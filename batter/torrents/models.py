@@ -6,9 +6,8 @@ import collections
 import bencode
 from django.db import models
 from django.core.urlresolvers import reverse
-from django.core.validators import EMPTY_VALUES
 from django.conf import settings
-from django.utils.encoding import python_2_unicode_compatible
+from django.utils.encoding import python_2_unicode_compatible, force_bytes
 from django.utils.translation import ugettext as _
 
 from jsonfield import JSONField
@@ -60,59 +59,62 @@ class Torrent(models.Model):
 
     @classmethod
     def from_torrent_dict(cls, torrent_dict, *args, **kwargs):
-        info_dict = torrent_dict['info']
+        info_dict = torrent_dict[b'info']
         torrent = cls()
-        torrent.announce = torrent_dict['announce']
-        torrent.announce_list = torrent_dict.get('announce-list')
-        torrent.creation_date = torrent_dict.get('creation date')
-        torrent.comment = torrent_dict.get('comment')
-        torrent.created_by = torrent_dict.get('created by')
-        torrent.encoding = torrent_dict.get('encoding')
-        torrent.piece_length = info_dict.get('piece length')
-        torrent.pieces = binascii.hexlify(info_dict.get('pieces'))
-        torrent.private = info_dict.get('private', 0) == 1
-        torrent.name = info_dict.get('name')
-        torrent.length = info_dict.get('length')
-        torrent.md5sum = info_dict.get('md5sum')
-        torrent.files = info_dict.get('files')
+        torrent.announce = torrent_dict[b'announce']
+        torrent.announce_list = torrent_dict.get(b'announce-list')
+        torrent.creation_date = torrent_dict.get(b'creation date')
+        torrent.comment = torrent_dict.get(b'comment')
+        torrent.created_by = torrent_dict.get(b'created by')
+        torrent.encoding = torrent_dict.get(b'encoding')
+        torrent.piece_length = info_dict.get(b'piece length')
+        torrent.pieces = binascii.hexlify(info_dict.get(b'pieces'))
+        torrent.private = info_dict.get(b'private', 0) == 1
+        torrent.name = info_dict.get(b'name')
+        torrent.length = info_dict.get(b'length')
+        torrent.md5sum = info_dict.get(b'md5sum')
+        torrent.files = info_dict.get(b'files')
         return torrent
 
     @models.permalink
     def get_absolute_url(self):
         return reverse('torrents_view', args=[str(self.id)])
 
+    @property
+    def is_single_file(self):
+        return self.files is None or len(self.files) > 1
+    
     def to_bencoded_string(self, *args, **kwargs):
-        torrent = {}
-        torrent[b'info'] = {}
+        def drop_empty(d):
+            """Recursively drops falsy values from a dict and coerces
+            everything else to :class:`bytes`."""
+            if isinstance(d, dict):
+                return dict((k, drop_empty(v)) for k, v in d.items() if v)
+            else:
+                return force_bytes(d)
+            
+        torrent = {
+            b'announce': self.announce,
+            b'announce-list': self.announce_list,
+            b'creation date': self.creation_date,
+            b'comment': self.comment,
+            b'created by': self.created_by,
+            b'encoding': self.encoding,
+        }
 
-        torrent[b'announce'] = convert(self.announce)
-        if self.announce_list not in EMPTY_VALUES:
-            torrent[b'announce-list'] = convert(self.announce_list)
-        if self.creation_date not in EMPTY_VALUES:
-            torrent[b'creation date'] = self.creation_date
-        if self.comment not in EMPTY_VALUES:
-            torrent[b'comment'] = convert(self.comment)
-        if self.created_by not in EMPTY_VALUES:
-            torrent[b'created by'] = convert(self.created_by)
-        if self.encoding not in EMPTY_VALUES:
-            torrent[b'encoding'] = convert(self.encoding)
-
-        torrent[b'info'] = info_dict = {}
-        info_dict[b'piece length'] = self.piece_length
-        info_dict[b'pieces'] = binascii.unhexlify(self.pieces)
-        if self.private:
-            info_dict[b'private'] = 1
-        info_dict[b'name'] = convert(self.name)
-
-        if self.files is not None and len(self.files) > 1:  # multi-file mode
-            info_dict[b'files'] = convert(self.files)
-
-        else:  # single file mode
+        torrent[b'info'] = info_dict = {
+            b'piece length': self.piece_length,
+            b'pieces': binascii.unhexlify(self.pieces),
+            b'private': int(self.is_private),
+            b'name': self.name
+        }
+        if self.is_single_file:
             info_dict[b'length'] = self.length
-            if self.md5sum is not None:
-                info_dict[b'md5sum'] = convert(self.md5sum)
+            info_dict[b'md5sum'] = self.md5sum
+        else:
+            info_dict[b'files'] = self.files
 
-        return bencode.bencode(torrent)
+        return bencode.bencode(drop_empty(torrent))
 
     def __str__(self):
         return self.name

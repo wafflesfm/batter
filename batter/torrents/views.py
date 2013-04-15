@@ -13,8 +13,7 @@ from .models import Torrent
 def upload_torrent(request):
     form = TorrentUploadForm(request.POST, request.FILES)
     if form.is_valid():
-        torrent = form.cleaned_data['torrent']
-        import pdb; pdb.set_trace()
+        torrent = form.cleaned_data['torrent_file']
         try:
             torrent.save()
             return redirect(torrent)
