@@ -76,7 +76,6 @@ class Torrent(models.Model):
         torrent.files = info_dict.get(b'files')
         return torrent
 
-    @models.permalink
     def get_absolute_url(self):
         return reverse('torrents_view', args=[str(self.id)])
 
