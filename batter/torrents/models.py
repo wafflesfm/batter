@@ -81,37 +81,43 @@ class Torrent(models.Model):
 
     @property
     def is_single_file(self):
-        return self.files is None or len(self.files) > 1
+        return self.files is None or len(self.files) <= 1
     
     def to_bencoded_string(self, *args, **kwargs):
         def drop_empty(d):
-            """Recursively drops falsy values from a dict and coerces
-            everything else to :class:`bytes`."""
+            """Recursively drops falsy values from `d` and coerce all
+            string-like values to :class:`bytes`."""
             if isinstance(d, dict):
-                return dict((k, drop_empty(v)) for k, v in d.items() if v)
-            else:
+                # Note(superbobry): 'bencode' forces us to use byte keys.
+                return dict((force_bytes(k), drop_empty(v))
+                            for k, v in d.items() if v)
+            elif isinstance(d, list):
+                return map(drop_empty, d)
+            elif isinstance(d, basestring):
                 return force_bytes(d)
+            else:
+                return d
             
         torrent = {
-            b'announce': self.announce,
-            b'announce-list': self.announce_list,
-            b'creation date': self.creation_date,
-            b'comment': self.comment,
-            b'created by': self.created_by,
-            b'encoding': self.encoding,
+            'announce': self.announce,
+            'announce-list': self.announce_list,
+            'creation date': self.creation_date,
+            'comment': self.comment,
+            'created by': self.created_by,
+            'encoding': self.encoding,
         }
 
-        torrent[b'info'] = info_dict = {
-            b'piece length': self.piece_length,
-            b'pieces': binascii.unhexlify(self.pieces),
-            b'private': int(self.is_private),
-            b'name': self.name
+        torrent['info'] = info_dict = {
+            'piece length': self.piece_length,
+            'pieces': binascii.unhexlify(self.pieces),
+            'private': int(self.is_private),
+            'name': self.name
         }
         if self.is_single_file:
-            info_dict[b'length'] = self.length
-            info_dict[b'md5sum'] = self.md5sum
+            info_dict['length'] = self.length
+            info_dict['md5sum'] = self.md5sum
         else:
-            info_dict[b'files'] = self.files
+            info_dict['files'] = self.files
 
         return bencode.bencode(drop_empty(torrent))
 
