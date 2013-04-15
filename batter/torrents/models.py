@@ -18,7 +18,7 @@ from . import managers
 
 @python_2_unicode_compatible
 class Torrent(models.Model):
-    announce = models.TextField(help_text="The announce URL of the tracker.")
+    announce = models.URLField(help_text=_("The announce URL of the tracker."))
     announce_list = JSONField(blank=True, null=True)
     creation_date = models.PositiveIntegerField(
         blank=True, null=True,
