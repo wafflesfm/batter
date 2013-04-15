@@ -2,13 +2,15 @@ from __future__ import absolute_import, unicode_literals
 
 import binascii
 
-import bencode
 from django.db import models
 from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.utils.encoding import python_2_unicode_compatible, force_bytes
 from django.utils.translation import ugettext as _
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes import generic
 
+import bencode
 from jsonfield import JSONField
 from model_utils.models import TimeStampedModel
 from taggit.managers import TaggableManager
@@ -154,6 +156,14 @@ class InheritingModel(models.Model):
         abstract = True
 
 
+class InheritingDescendingModel(InheritingModel):
+    objects = managers.InheritingDescendingManager()
+    base_objects = managers.DescendingManager()
+
+    class Meta:
+        abstract = True
+
+
 class Upload(InheritingModel, TimeStampedModel):
     torrent = models.OneToOneField(
         Torrent,
@@ -161,18 +171,48 @@ class Upload(InheritingModel, TimeStampedModel):
         null=False
     )
     uploader = models.ForeignKey(settings.AUTH_USER_MODEL, null=False)
-    parent = models.ForeignKey(
-        'TorrentGroup',
-        null=False,
-        related_name='uploads'
+
+    # we use a GenericForeignKey to handle the case that you might have
+    # a model that goes between "Upload" and "TorrentGroup" - e.g.
+    # a Waffles-style "Release"
+    #
+    # an example implementation of this can be found in
+    # torrents_inheritance_tests
+    #
+    # if you do not use this in your site, you may wish to replace this
+    # with the simpler:
+    # parent = models.ForeignKey(
+    #     'TorrentGroup', null=False, related_name='children'
+    # )
+    parent_content_type = models.ForeignKey(ContentType)
+    parent_object_id = models.PositiveIntegerField()
+    parent = generic.GenericForeignKey(
+        'parent_content_type', 'parent_object_id'
     )
 
     def get_parent_model(self):
         return Upload
 
 
-class TorrentGroup(InheritingModel, TimeStampedModel):
+class TorrentGroup(InheritingDescendingModel, TimeStampedModel):
     tags = TaggableManager()
+
+    @property
+    def children(self):
+        """
+        Override this on a per-subclass basis if you want your TorrentGroup
+        to have different child classes. See the Upload class comments above
+        for more information on why this might be the case.
+        """
+        self_type = ContentType.objects.get_for_model(self)
+        child_model = self.get_children_model()
+        return child_model.objects.filter(
+            parent_content_type__pk=self_type.id,
+            parent_object_id=self.id
+        )
+
+    def get_children_model(self):
+        return Upload
 
     def get_parent_model(self):
         return TorrentGroup

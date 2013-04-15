@@ -92,32 +92,26 @@ class UploadTests(BaseTestCase):
 
 class TorrentGroupTests(BaseTestCase):
     def test_can_get_parent(self):
-        t = TorrentGroup.base_objects.get(
-            uploads=self.boring_upload
-        )
-        t2 = TorrentGroup.base_objects.get(
-            uploads=self.exciting_upload
-        )
+        t = self.boring_upload.parent
+        t2 = TorrentGroup.base_objects.has_child(self.exciting_upload)
         self.assertIsInstance(t, TorrentGroup)
         self.assertIsInstance(t2, TorrentGroup)
-        self.assertNotIsInstance(t, models.BoringGroup)
+        self.assertIsInstance(t, models.BoringGroup)
         self.assertNotIsInstance(t2, models.ExcitingGroup)
 
     def test_gets_boring(self):
-        bg = TorrentGroup.objects.get(
-            uploads=self.boring_upload
-        )
+        bg = TorrentGroup.objects.has_child(self.boring_upload)
         self.assertIsInstance(bg, models.BoringGroup)
         self.assertEquals(bg, self.boring_group)
-        self.assertEquals(bg.uploads.all()[0], self.boring_upload)
+        self.assertEquals(bg.children.all()[0], self.boring_upload)
+        self.assertEquals(self.boring_upload.parent, bg)
 
     def test_gets_exciting(self):
-        eg = TorrentGroup.objects.get(
-            uploads=self.exciting_group
-        )
+        eg = TorrentGroup.objects.has_child(self.exciting_upload)
         self.assertIsInstance(eg, models.ExcitingGroup)
         self.assertEquals(eg, self.exciting_group)
-        self.assertEquals(eg.uploads.all()[0], self.exciting_upload)
+        self.assertEquals(eg.children.all()[0], self.exciting_upload)
+        self.assertEquals(self.exciting_upload.parent, eg)
 
     def test_get_from_torrent(self):
         self.assertEquals(
@@ -133,15 +127,13 @@ class TorrentGroupTests(BaseTestCase):
         self.ex_torrent2.upload.parent.is_exciting = True
         self.ex_torrent2.upload.save()
 
-        eg = models.ExcitingGroup.objects.get(
-            uploads__torrent=self.ex_torrent2
-        )
+        eg = models.ExcitingUpload.objects.get(
+            torrent=self.ex_torrent2
+        ).parent
         self.assertEquals(eg.is_exciting, True)
 
     def test_subclass_to_parent(self):
-        eg = TorrentGroup.objects.get(
-            uploads=self.exciting_upload
-        )
+        eg = TorrentGroup.objects.has_child(self.exciting_upload)
         self.assertIsInstance(eg, models.ExcitingGroup)
         eg_parent = eg.get_parent_object()
         self.assertIsInstance(eg_parent, TorrentGroup)
