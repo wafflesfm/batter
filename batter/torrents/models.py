@@ -156,9 +156,38 @@ class InheritingModel(models.Model):
         abstract = True
 
 
-class InheritingDescendingModel(InheritingModel):
+class DescendingMixin(object):
+    @property
+    def children(self):
+        child_model = self.get_child_model()
+        if isinstance(child_model.parent, generic.GenericForeignKey):
+            self_type = ContentType.objects.get_for_model(self)
+            return child_model.objects.filter(
+                parent_content_type__pk=self_type.id,
+                parent_object_id=self.id
+            )
+        else:
+            return self._children
+
+    def get_child_model(self):  # pragma: no cover
+        """
+        Override this on a per-subclass basis if you want your TorrentGroup
+        to have different child classes. See the Upload class comments above
+        for more information on why this might be the case.
+        """
+        raise NotImplementedError
+
+
+class InheritingDescendingModel(DescendingMixin, InheritingModel):
     objects = managers.InheritingDescendingManager()
     base_objects = managers.DescendingManager()
+
+    class Meta:
+        abstract = True
+
+
+class DescendingModel(DescendingMixin, models.Model):
+    objects = managers.DescendingManager()
 
     class Meta:
         abstract = True
@@ -197,21 +226,7 @@ class Upload(InheritingModel, TimeStampedModel):
 class TorrentGroup(InheritingDescendingModel, TimeStampedModel):
     tags = TaggableManager()
 
-    @property
-    def children(self):
-        """
-        Override this on a per-subclass basis if you want your TorrentGroup
-        to have different child classes. See the Upload class comments above
-        for more information on why this might be the case.
-        """
-        self_type = ContentType.objects.get_for_model(self)
-        child_model = self.get_children_model()
-        return child_model.objects.filter(
-            parent_content_type__pk=self_type.id,
-            parent_object_id=self.id
-        )
-
-    def get_children_model(self):
+    def get_child_model(self):
         return Upload
 
     def get_parent_model(self):

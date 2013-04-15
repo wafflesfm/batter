@@ -8,7 +8,14 @@ from .. import models
 
 
 class BaseTestCase(TestCase):
-    def setUp(self):
+    def setUp_user(self):
+        self.samantha = User.objects.create_user(
+            'samantha',
+            'samantha@example.com',
+            'soliloquy'
+        )
+
+    def setUp_torrents(self):
         with open(TEST_FILE_PATH, 'rb') as fp:
             self.ex_torrent = Torrent.from_torrent_file(fp)
             fp.seek(0)
@@ -21,12 +28,6 @@ class BaseTestCase(TestCase):
         self.boring_group.save()
         self.exciting_group = models.ExcitingGroup()
         self.exciting_group.save()
-
-        self.samantha = User.objects.create_user(
-            'samantha',
-            'samantha@example.com',
-            'soliloquy'
-        )
 
         self.boring_upload = models.BoringUpload(
             uploader=self.samantha,
@@ -42,6 +43,10 @@ class BaseTestCase(TestCase):
             is_exciting=False
         )
         self.exciting_upload.save()
+
+    def setUp(self):
+        self.setUp_user()
+        self.setUp_torrents()
 
 
 class UploadTests(BaseTestCase):
@@ -137,3 +142,65 @@ class TorrentGroupTests(BaseTestCase):
         self.assertIsInstance(eg, models.ExcitingGroup)
         eg_parent = eg.get_parent_object()
         self.assertIsInstance(eg_parent, TorrentGroup)
+
+    def test_has_child_does_not_exist(self):
+        with self.assertRaises(models.ExcitingGroup.DoesNotExist):
+            models.ExcitingGroup.objects.has_child(self.boring_group)
+
+
+class InbetweenerTests(BaseTestCase):
+
+    def setUp_torrents(self):
+        with open(TEST_FILE_PATH, 'rb') as fp:
+            self.ex_torrent = Torrent.from_torrent_file(fp)
+            fp.seek(0)
+            self.ex_torrent2 = Torrent.from_torrent_file(fp)
+            self.ex_torrent2.pieces += 'q'  # or not unique
+        self.ex_torrent.save()
+        self.ex_torrent2.save()
+
+        self.boring_group = models.BoringGroup()
+        self.boring_group.save()
+        self.inbetweener_group = models.InbetweenerGroup()
+        self.inbetweener_group.save()
+
+        self.inbetweener_tweener = models.InbetweenerTweener(
+            parent=self.inbetweener_group
+        )
+        self.inbetweener_tweener.save()
+
+        self.boring_upload = models.BoringUpload(
+            uploader=self.samantha,
+            torrent=self.ex_torrent,
+            parent=self.boring_group
+        )
+        self.boring_upload.save()
+
+        self.inbetweener_upload = models.InbetweenerUpload(
+            uploader=self.samantha,
+            torrent=self.ex_torrent2,
+            parent=self.inbetweener_tweener
+        )
+        self.inbetweener_upload.save()
+
+    def test_going_up(self):
+        self.assertEquals(
+            self.inbetweener_upload.parent,
+            self.inbetweener_tweener
+        )
+        self.assertEquals(
+            self.inbetweener_upload.parent.parent,
+            self.inbetweener_group
+        )
+
+        self.assertEquals(self.boring_upload.parent, self.boring_group)
+
+    def test_going_down(self):
+        self.assertEquals(
+            self.inbetweener_group.children.all()[0],
+            self.inbetweener_tweener
+        )
+        self.assertEquals(
+            self.inbetweener_group.children.all()[0].children.all()[0],
+            self.inbetweener_upload
+        )

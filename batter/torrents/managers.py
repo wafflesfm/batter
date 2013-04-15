@@ -20,7 +20,7 @@ class DescendingManager(Manager):
         # with some additional validation
 
         # someone might want to contribute a has_descendant at some point
-        if isinstance(child.parent, self.model):
+        if hasattr(child, "parent") and isinstance(child.parent, self.model):
             return self.get_query_set().get(pk=child.parent.id)
         else:
             raise self.model.DoesNotExist
