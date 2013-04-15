@@ -3,10 +3,10 @@ from __future__ import absolute_import, unicode_literals
 import cStringIO as StringIO
 
 from django.test import TestCase
-from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.files import File
 
+from .local_settings import TEST_FILE_PATH
 from ..fields import TorrentField
 
 
@@ -16,7 +16,7 @@ class TorrentFieldTests(TestCase):
         self.assertRaises(ValidationError, field.clean, False)
 
     def test_creates_torrent(self):
-        torrent_file_raw = open(settings.TEST_FILE_PATH, 'rb')
+        torrent_file_raw = open(TEST_FILE_PATH, 'rb')
         torrent_data = torrent_file_raw.read()
         torrent_file_raw.seek(0)
 

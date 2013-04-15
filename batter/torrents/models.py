@@ -84,20 +84,6 @@ class Torrent(models.Model):
         return self.files is None or len(self.files) <= 1
     
     def to_bencoded_string(self, *args, **kwargs):
-        def drop_empty(d):
-            """Recursively drops falsy values from `d` and coerce all
-            string-like values to :class:`bytes`."""
-            if isinstance(d, dict):
-                # Note(superbobry): 'bencode' forces us to use byte keys.
-                return dict((force_bytes(k), drop_empty(v))
-                            for k, v in d.items() if v)
-            elif isinstance(d, list):
-                return map(drop_empty, d)
-            elif isinstance(d, basestring):
-                return force_bytes(d)
-            else:
-                return d
-            
         torrent = {
             'announce': self.announce,
             'announce-list': self.announce_list,
@@ -119,7 +105,8 @@ class Torrent(models.Model):
         else:
             info_dict['files'] = self.files
 
-        return bencode.bencode(drop_empty(torrent))
+        return bencode.bencode(
+            recursive_force_bytes(recursive_drop_falsy(torrent)))
 
     def __str__(self):
         return self.name
@@ -183,14 +170,28 @@ class TorrentGroup(InheritingModel, TimeStampedModel):
         return TorrentGroup
 
 
-def convert(data):
-    """ Converts unicode (or a dict/Mapping/Iterable containing unicode
-    strings) to str. """
-    if isinstance(data, basestring):
-        return str(data)
-    elif isinstance(data, collections.Mapping):
-        return dict(map(convert, data.iteritems()))
-    elif isinstance(data, collections.Iterable):
-        return type(data)(map(convert, data))
+def recursive_drop_falsy(d):
+    """Recursively drops falsy values from a given data structure."""
+    if isinstance(d, dict):
+        return dict((k, recursive_drop_falsy(v)) for k, v in d.items() if v)
+    elif isinstance(d, list):
+        return map(recursive_drop_falsy, d)
+    elif isinstance(d, basestring):
+        return force_bytes(d)
     else:
-        return data
+        return d
+            
+    
+def recursive_force_bytes(d):
+    """Recursively walks a given data structure and coerces all string-like
+    values to :class:`bytes`."""
+    if isinstance(d, dict):
+        # Note(superbobry): 'bencode' forces us to use byte keys.
+        return dict((force_bytes(k), recursive_force_bytes(v))
+                    for k, v in d.items() if v)
+    elif isinstance(d, list):
+        return map(recursive_force_bytes, d)
+    elif isinstance(d, basestring):
+        return force_bytes(d)
+    else:
+        return d

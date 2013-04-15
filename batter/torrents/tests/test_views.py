@@ -5,6 +5,7 @@ from django.core.urlresolvers import reverse
 
 from batter.test import LoggedInTestCase
 
+from .local_settings import TEST_FILE_PATH
 from ..models import Torrent
 
 
@@ -18,14 +19,14 @@ class UploadTorrentTests(LoggedInTestCase):
         self.assertEquals(response.status_code, 200)
 
     def test_post_valid_torrent(self):
-        with open(settings.TEST_FILE_PATH, 'rb') as fp:
+        with open(TEST_FILE_PATH, 'rb') as fp:
             response = self.client.post(self.url, {'torrent_file': fp})
             
         self.assertEquals(response.status_code, 302)
         self.assertEquals(Torrent.objects.count(), 1)
 
     def test_post_duplicate_torrent(self):
-        with open(settings.TEST_FILE_PATH, 'rb') as fp:
+        with open(TEST_FILE_PATH, 'rb') as fp:
             self.client.post(self.url, {'torrent_file': fp})
             fp.seek(0)
             response = self.client.post(self.url, {'torrent_file': fp})
@@ -41,7 +42,7 @@ class UploadTorrentTests(LoggedInTestCase):
 
 class ViewTorrentTests(LoggedInTestCase):
     def setUp(self):
-        with open(settings.TEST_FILE_PATH, 'rb') as test_file:
+        with open(TEST_FILE_PATH, 'rb') as test_file:
             self.torrent = Torrent.from_torrent_file(test_file)
             
         self.torrent.save()
@@ -63,7 +64,7 @@ class ViewTorrentTests(LoggedInTestCase):
 
 class GenerateTorrentTests(LoggedInTestCase):
     def setUp(self):
-        with open(settings.TEST_FILE_PATH, 'rb') as test_file:
+        with open(TEST_FILE_PATH, 'rb') as test_file:
             self.torrent = Torrent.from_torrent_file(test_file)
             self.torrent_size = test_file.tell()
             test_file.seek(0)

@@ -2,9 +2,9 @@ from __future__ import absolute_import, unicode_literals
 
 import hashlib
 
-from django.conf import settings
 from django.test import TestCase
 
+from .local_settings import TEST_FILE_PATH
 from ..models import Torrent
 
 
@@ -13,7 +13,7 @@ sha1 = lambda data: hashlib.sha1(data).hexdigest()
 
 class TorrentTests(TestCase):
     def test_from_torrent_file(self):
-        with open(settings.TEST_FILE_PATH, 'rb') as test_file:
+        with open(TEST_FILE_PATH, 'rb') as test_file:
             torrent = Torrent.from_torrent_file(test_file)
             test_file.seek(0)
             orig_torrent_str = test_file.read()
