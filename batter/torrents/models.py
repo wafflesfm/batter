@@ -37,7 +37,7 @@ class Torrent(models.Model):
     pieces = models.TextField(unique=True,
         help_text=_("A concatenation of all 20-byte SHA1 hash values of the "
                     "torrent's pieces"))
-    private = models.BooleanField(
+    is_private = models.BooleanField(
         help_text=_("Whether or not the client may obtain peer data from "
                     "other sources (PEX, DHT)."))
     name = models.TextField(
