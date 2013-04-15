@@ -21,7 +21,7 @@ def upload_torrent(request):
             # We've already uploaded this torrent
             # (torrent.pieces is not unique in the database)
             pass
-        
+
     return render(request, 'torrents/upload.html', {'form': form})
 
 

@@ -17,7 +17,7 @@ class TorrentTests(TestCase):
             torrent = Torrent.from_torrent_file(test_file)
             test_file.seek(0)
             orig_torrent_str = test_file.read()
-            
+
         self.assertEquals(torrent.name, "archlinux-2013.04.01-dual.iso")
         self.assertEquals(torrent.to_bencoded_string(), orig_torrent_str)
         # note that the torrent file is slightly modified

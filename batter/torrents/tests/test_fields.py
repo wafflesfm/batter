@@ -1,6 +1,6 @@
 from __future__ import absolute_import, unicode_literals
 
-import cStringIO as StringIO
+from cStringIO import StringIO
 
 from django.test import TestCase
 from django.core.exceptions import ValidationError
@@ -28,8 +28,6 @@ class TorrentFieldTests(TestCase):
 
     def test_invalid_torrent(self):
         field = TorrentField()
-        not_a_torrent = File(StringIO.StringIO(
-            "this is clearly an invalid torrent"
-        ))
+        not_a_torrent = File(StringIO("this is clearly an invalid torrent"))
         not_a_torrent.name = "invalid.torrent"
         self.assertRaises(ValidationError, field.clean, not_a_torrent)

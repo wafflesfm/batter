@@ -13,7 +13,7 @@ class UploadTorrentTests(LoggedInTestCase):
     def setUp(self):
         self.url = reverse("torrents_upload")
         super(UploadTorrentTests, self).setUp()
-        
+
     def test_get(self):
         response = self.client.get(self.url)
         self.assertEquals(response.status_code, 200)
@@ -21,7 +21,7 @@ class UploadTorrentTests(LoggedInTestCase):
     def test_post_valid_torrent(self):
         with open(TEST_FILE_PATH, 'rb') as fp:
             response = self.client.post(self.url, {'torrent_file': fp})
-            
+
         self.assertEquals(response.status_code, 302)
         self.assertEquals(Torrent.objects.count(), 1)
 
@@ -30,7 +30,7 @@ class UploadTorrentTests(LoggedInTestCase):
             self.client.post(self.url, {'torrent_file': fp})
             fp.seek(0)
             response = self.client.post(self.url, {'torrent_file': fp})
-            
+
         self.assertEquals(response.status_code, 200)
         self.assertEquals(Torrent.objects.count(), 1)
 
@@ -44,7 +44,7 @@ class ViewTorrentTests(LoggedInTestCase):
     def setUp(self):
         with open(TEST_FILE_PATH, 'rb') as test_file:
             self.torrent = Torrent.from_torrent_file(test_file)
-            
+
         self.torrent.save()
         self.torrent_url = reverse("torrents_view", kwargs={
             'pk': self.torrent.pk
