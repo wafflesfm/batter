@@ -98,21 +98,21 @@ class UploadTests(BaseTestCase):
 class TorrentGroupTests(BaseTestCase):
     def test_can_get_parent(self):
         t = self.boring_upload.parent
-        t2 = TorrentGroup.base_objects.has_child(self.exciting_upload)
+        t2 = TorrentGroup.base_objects.get_by_child(self.exciting_upload)
         self.assertIsInstance(t, TorrentGroup)
         self.assertIsInstance(t2, TorrentGroup)
         self.assertIsInstance(t, models.BoringGroup)
         self.assertNotIsInstance(t2, models.ExcitingGroup)
 
     def test_gets_boring(self):
-        bg = TorrentGroup.objects.has_child(self.boring_upload)
+        bg = TorrentGroup.objects.get_by_child(self.boring_upload)
         self.assertIsInstance(bg, models.BoringGroup)
         self.assertEquals(bg, self.boring_group)
         self.assertEquals(bg.children.all()[0], self.boring_upload)
         self.assertEquals(self.boring_upload.parent, bg)
 
     def test_gets_exciting(self):
-        eg = TorrentGroup.objects.has_child(self.exciting_upload)
+        eg = TorrentGroup.objects.get_by_child(self.exciting_upload)
         self.assertIsInstance(eg, models.ExcitingGroup)
         self.assertEquals(eg, self.exciting_group)
         self.assertEquals(eg.children.all()[0], self.exciting_upload)
@@ -138,14 +138,14 @@ class TorrentGroupTests(BaseTestCase):
         self.assertEquals(eg.is_exciting, True)
 
     def test_subclass_to_parent(self):
-        eg = TorrentGroup.objects.has_child(self.exciting_upload)
+        eg = TorrentGroup.objects.get_by_child(self.exciting_upload)
         self.assertIsInstance(eg, models.ExcitingGroup)
         eg_parent = eg.get_parent_object()
         self.assertIsInstance(eg_parent, TorrentGroup)
 
-    def test_has_child_does_not_exist(self):
+    def test_get_by_child_does_not_exist(self):
         with self.assertRaises(models.ExcitingGroup.DoesNotExist):
-            models.ExcitingGroup.objects.has_child(self.boring_group)
+            models.ExcitingGroup.objects.get_by_child(self.boring_group)
 
 
 class InbetweenerTests(BaseTestCase):

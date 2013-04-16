@@ -15,7 +15,7 @@ class InheritingManager(Manager):
 
 
 class DescendingManager(Manager):
-    def has_child(self, child):
+    def get_by_child(self, child):
         # this basically just returns child.parent
         # with some additional validation
 
