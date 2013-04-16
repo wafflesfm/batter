@@ -157,6 +157,28 @@ class InheritingModel(models.Model):
 
 
 class DescendingMixin(object):
+    def __new__(cls, *args, **kwargs):
+        superme = super(DescendingMixin, cls)
+        if superme.__new__ is object.__new__:  # object.__new__ takes no params
+            obj = superme.__new__(cls)
+        else:
+            obj = superme.__new__(cls, *args, **kwargs)
+
+        child_model = obj.get_child_model()
+        if not hasattr(child_model, 'parent'):
+            raise AttributeError("Classes using DescendingMixin must have a " +
+                                 "GenericForeignKey or ForeignKey named " +
+                                 "'parent' on their child model")
+
+        if not isinstance(child_model.parent, generic.GenericForeignKey) \
+                and not hasattr(cls, '_children'):
+            raise AttributeError("Classes using DescendingMixin must have a " +
+                                 "GenericForeignKey on their child model " +
+                                 "or must have a ForeignKey with a " +
+                                 "related_name of '_children' on their " +
+                                 "child model")
+        return obj
+
     @property
     def children(self):
         child_model = self.get_child_model()
