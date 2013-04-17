@@ -123,34 +123,34 @@ class Torrent(models.Model):
 
 
 class InheritingModel(models.Model):
-    _child_name = models.CharField(max_length=100, editable=False)
+    _subclass_name = models.CharField(max_length=100, editable=False)
 
     objects = managers.InheritingManager()
     base_objects = models.Manager()
 
     def save(self, *args, **kwargs):
         # NB: based on http://djangosnippets.org/snippets/1037/
-        self._child_name = self.get_child_name()
+        self._subclass_name = self.get_subclass_name()
         super(InheritingModel, self).save(*args, **kwargs)
 
-    def get_child_name(self):
-        if type(self) is self.get_parent_model():
-            return self._child_name
-        return self.get_parent_link().related_query_name()
+    def get_subclass_name(self):
+        if type(self) is self.get_superclass_model():
+            return self._subclass_name
+        return self.get_superclass_link().related_query_name()
 
-    def get_child_object(self):
-        return getattr(self, self.get_child_name())
+    def get_subclass_object(self):
+        return getattr(self, self.get_subclass_name())
 
-    def get_parent_link(self):
-        return self._meta.parents[self.get_parent_model()]
+    def get_superclass_link(self):
+        return self._meta.parents[self.get_superclass_model()]
 
-    def get_parent_model(self):  # pragma: no cover
+    def get_superclass_model(self):  # pragma: no cover
         # this method is excluded from coverage purely because it should never
         # be run. at all. it's only here so you know you have to override it.
         raise NotImplementedError
 
-    def get_parent_object(self):
-        return getattr(self, self.get_parent_link().name)
+    def get_superclass_object(self):
+        return getattr(self, self.get_superclass_link().name)
 
     class Meta:
         abstract = True
@@ -193,7 +193,7 @@ class DescendingMixin(object):
 
     def get_child_model(self):  # pragma: no cover
         """
-        Override this on a per-subclass basis if you want your TorrentGroup
+        Override this on a per-subclass basis if you want your UploadGroup
         to have different child classes. See the Upload class comments above
         for more information on why this might be the case.
         """
@@ -224,7 +224,7 @@ class Upload(InheritingModel, TimeStampedModel):
     uploader = models.ForeignKey(settings.AUTH_USER_MODEL, null=False)
 
     # we use a GenericForeignKey to handle the case that you might have
-    # a model that goes between "Upload" and "TorrentGroup" - e.g.
+    # a model that goes between "Upload" and "UploadGroup" - e.g.
     # a Waffles-style "Release"
     #
     # an example implementation of this can be found in
@@ -233,7 +233,7 @@ class Upload(InheritingModel, TimeStampedModel):
     # if you do not use this in your site, you may wish to replace this
     # with the simpler:
     # parent = models.ForeignKey(
-    #     'TorrentGroup', null=False, related_name='children'
+    #     'UploadGroup', null=False, related_name='children'
     # )
     parent_content_type = models.ForeignKey(ContentType)
     parent_object_id = models.PositiveIntegerField()
@@ -241,18 +241,60 @@ class Upload(InheritingModel, TimeStampedModel):
         'parent_content_type', 'parent_object_id'
     )
 
-    def get_parent_model(self):
+    @staticmethod
+    def get_superclass_model():
         return Upload
 
+    @staticmethod
+    def filter_queryset_for_parent(
+        self, qs, data
+    ):
+        q = None
+        for dataset in data:
+            my_q = models.Q(
+                parent_content_type=dataset['content_type'],
+                parent_object_id=dataset['id']
+            )
+            if q is None:
+                q = my_q
+            else:
+                q = q | my_q
 
-class TorrentGroup(InheritingDescendingModel, TimeStampedModel):
+        return qs.filter(q)
+
+
+class UploadGroup(InheritingDescendingModel, TimeStampedModel):
     tags = TaggableManager()
 
-    def get_child_model(self):
+    @staticmethod
+    def get_child_model():
         return Upload
 
-    def get_parent_model(self):
-        return TorrentGroup
+    @staticmethod
+    def get_superclass_model():
+        return UploadGroup
+
+    def get_parent_queryset(self):
+        return [self.pk]
+
+    @property
+    def uploads(self):
+        # down
+        chain_top = self.get_child_model()
+        chain_root = [chain_top]
+        while not issubclass(chain_top, Upload):
+            chain_top = chain_top.get_child_model()
+            chain_root.append(chain_top)
+
+        # and back up
+        qs = [self.pk]
+        for chain_bit in chain_root:
+            qs = chain_bit.objects.filter(
+
+            )
+        return chain_top.objects.filter(
+            **chain_top.get_parent_queryset_filter()
+        )
 
 
 def recursive_drop_falsy(d):

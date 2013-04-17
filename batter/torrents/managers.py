@@ -5,7 +5,7 @@ from django.db.models import Manager
 class InheritingQuerySet(QuerySet):
     def iterator(self):
         for obj in super(InheritingQuerySet, self).iterator():
-            yield obj.get_child_object()
+            yield obj.get_subclass_object()
 
 
 class InheritingManager(Manager):

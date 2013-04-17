@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
 
-from torrents.models import Torrent, TorrentGroup, Upload
+from torrents.models import Torrent, UploadGroup, Upload
 from torrents.tests.local_settings import TEST_FILE_PATH
 
 from .. import models
@@ -88,31 +88,31 @@ class UploadTests(BaseTestCase):
         eu = models.ExcitingUpload.objects.get(torrent=self.ex_torrent2)
         self.assertEquals(eu.is_exciting, True)
 
-    def test_subclass_to_parent(self):
+    def test_subclass_to_superclass(self):
         eu = Upload.objects.get(torrent=self.ex_torrent2)
         self.assertIsInstance(eu, models.ExcitingUpload)
-        eu_parent = eu.get_parent_object()
+        eu_parent = eu.get_superclass_object()
         self.assertIsInstance(eu_parent, Upload)
 
 
-class TorrentGroupTests(BaseTestCase):
+class UploadGroupTests(BaseTestCase):
     def test_can_get_parent(self):
         t = self.boring_upload.parent
-        t2 = TorrentGroup.base_objects.get_by_child(self.exciting_upload)
-        self.assertIsInstance(t, TorrentGroup)
-        self.assertIsInstance(t2, TorrentGroup)
+        t2 = UploadGroup.base_objects.get_by_child(self.exciting_upload)
+        self.assertIsInstance(t, UploadGroup)
+        self.assertIsInstance(t2, UploadGroup)
         self.assertIsInstance(t, models.BoringGroup)
         self.assertNotIsInstance(t2, models.ExcitingGroup)
 
     def test_gets_boring(self):
-        bg = TorrentGroup.objects.get_by_child(self.boring_upload)
+        bg = UploadGroup.objects.get_by_child(self.boring_upload)
         self.assertIsInstance(bg, models.BoringGroup)
         self.assertEquals(bg, self.boring_group)
         self.assertEquals(bg.children.all()[0], self.boring_upload)
         self.assertEquals(self.boring_upload.parent, bg)
 
     def test_gets_exciting(self):
-        eg = TorrentGroup.objects.get_by_child(self.exciting_upload)
+        eg = UploadGroup.objects.get_by_child(self.exciting_upload)
         self.assertIsInstance(eg, models.ExcitingGroup)
         self.assertEquals(eg, self.exciting_group)
         self.assertEquals(eg.children.all()[0], self.exciting_upload)
@@ -138,14 +138,17 @@ class TorrentGroupTests(BaseTestCase):
         self.assertEquals(eg.is_exciting, True)
 
     def test_subclass_to_parent(self):
-        eg = TorrentGroup.objects.get_by_child(self.exciting_upload)
+        eg = UploadGroup.objects.get_by_child(self.exciting_upload)
         self.assertIsInstance(eg, models.ExcitingGroup)
-        eg_parent = eg.get_parent_object()
-        self.assertIsInstance(eg_parent, TorrentGroup)
+        eg_parent = eg.get_superclass_object()
+        self.assertIsInstance(eg_parent, UploadGroup)
 
     def test_get_by_child_does_not_exist(self):
         with self.assertRaises(models.ExcitingGroup.DoesNotExist):
             models.ExcitingGroup.objects.get_by_child(self.boring_group)
+
+    def test_get_uploads_from_root(self):
+        print self.boring_group.uploads
 
 
 class InbetweenerTests(BaseTestCase):
