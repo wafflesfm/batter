@@ -148,7 +148,14 @@ class UploadGroupTests(BaseTestCase):
             models.ExcitingGroup.objects.get_by_child(self.boring_group)
 
     def test_get_uploads_from_root(self):
-        print self.boring_group.uploads
+        self.assertEquals(
+            self.boring_upload,
+            self.boring_group.uploads.get()
+        )
+        self.assertEquals(
+            self.boring_group.uploads.count(),
+            1
+        )
 
 
 class InbetweenerTests(BaseTestCase):
@@ -206,4 +213,14 @@ class InbetweenerTests(BaseTestCase):
         self.assertEquals(
             self.inbetweener_group.children.all()[0].children.all()[0],
             self.inbetweener_upload
+        )
+
+    def test_get_uploads_from_root(self):
+        self.assertEquals(
+            self.inbetweener_upload,
+            self.inbetweener_group.uploads.get()
+        )
+        self.assertEquals(
+            self.inbetweener_group.uploads.count(),
+            1
         )

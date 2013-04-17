@@ -241,26 +241,22 @@ class Upload(InheritingModel, TimeStampedModel):
         'parent_content_type', 'parent_object_id'
     )
 
+    # this is used for quickly getting to all the uploads associated with
+    # an UploadGroup
+    upload_group = models.ForeignKey('UploadGroup', related_name='uploads')
+
+    def save(self, *args, **kwargs):
+        # rewrite my upload_group
+        current = self
+        while not isinstance(current, UploadGroup):
+            current = current.parent
+        self.upload_group = current
+
+        super(Upload, self).save(*args, **kwargs)
+
     @staticmethod
     def get_superclass_model():
         return Upload
-
-    @staticmethod
-    def filter_queryset_for_parent(
-        self, qs, data
-    ):
-        q = None
-        for dataset in data:
-            my_q = models.Q(
-                parent_content_type=dataset['content_type'],
-                parent_object_id=dataset['id']
-            )
-            if q is None:
-                q = my_q
-            else:
-                q = q | my_q
-
-        return qs.filter(q)
 
 
 class UploadGroup(InheritingDescendingModel, TimeStampedModel):
@@ -273,28 +269,6 @@ class UploadGroup(InheritingDescendingModel, TimeStampedModel):
     @staticmethod
     def get_superclass_model():
         return UploadGroup
-
-    def get_parent_queryset(self):
-        return [self.pk]
-
-    @property
-    def uploads(self):
-        # down
-        chain_top = self.get_child_model()
-        chain_root = [chain_top]
-        while not issubclass(chain_top, Upload):
-            chain_top = chain_top.get_child_model()
-            chain_root.append(chain_top)
-
-        # and back up
-        qs = [self.pk]
-        for chain_bit in chain_root:
-            qs = chain_bit.objects.filter(
-
-            )
-        return chain_top.objects.filter(
-            **chain_top.get_parent_queryset_filter()
-        )
 
 
 def recursive_drop_falsy(d):

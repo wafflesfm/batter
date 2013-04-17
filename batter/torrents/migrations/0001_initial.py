@@ -37,6 +37,7 @@ class Migration(SchemaMigration):
             ('uploader', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
             ('parent_content_type', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['contenttypes.ContentType'])),
             ('parent_object_id', self.gf('django.db.models.fields.PositiveIntegerField')()),
+            ('upload_group', self.gf('django.db.models.fields.related.ForeignKey')(related_name=u'uploads', to=orm['torrents.UploadGroup'])),
         ))
         db.send_create_signal(u'torrents', ['Upload'])
 
@@ -137,6 +138,7 @@ class Migration(SchemaMigration):
             'parent_content_type': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['contenttypes.ContentType']"}),
             'parent_object_id': ('django.db.models.fields.PositiveIntegerField', [], {}),
             'torrent': ('django.db.models.fields.related.OneToOneField', [], {'related_name': "u'upload'", 'unique': 'True', 'to': u"orm['torrents.Torrent']"}),
+            'upload_group': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "u'uploads'", 'to': u"orm['torrents.UploadGroup']"}),
             'uploader': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']"})
         },
         u'torrents.uploadgroup': {
