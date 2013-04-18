@@ -11,18 +11,18 @@ class Migration(SchemaMigration):
         # Adding model 'Torrent'
         db.create_table(u'torrents_torrent', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('announce', self.gf('django.db.models.fields.TextField')()),
+            ('announce', self.gf('django.db.models.fields.URLField')(max_length=200)),
             ('announce_list', self.gf('jsonfield.fields.JSONField')(null=True, blank=True)),
             ('creation_date', self.gf('django.db.models.fields.PositiveIntegerField')(null=True, blank=True)),
             ('comment', self.gf('django.db.models.fields.TextField')(null=True, blank=True)),
             ('created_by', self.gf('django.db.models.fields.TextField')(null=True, blank=True)),
             ('encoding', self.gf('django.db.models.fields.TextField')(null=True, blank=True)),
-            ('piece_length', self.gf('django.db.models.fields.PositiveIntegerField')()),
+            ('piece_length', self.gf('django.db.models.fields.PositiveIntegerField')(null=True, blank=True)),
             ('pieces', self.gf('django.db.models.fields.TextField')(unique=True)),
-            ('private', self.gf('django.db.models.fields.BooleanField')(default=False)),
+            ('is_private', self.gf('django.db.models.fields.BooleanField')(default=False)),
             ('name', self.gf('django.db.models.fields.TextField')()),
             ('length', self.gf('django.db.models.fields.PositiveIntegerField')(null=True, blank=True)),
-            ('md5sum', self.gf('django.db.models.fields.TextField')(null=True, blank=True)),
+            ('md5sum', self.gf('django.db.models.fields.CharField')(max_length=32, null=True, blank=True)),
             ('files', self.gf('jsonfield.fields.JSONField')(null=True, blank=True)),
         ))
         db.send_create_signal(u'torrents', ['Torrent'])
@@ -32,21 +32,23 @@ class Migration(SchemaMigration):
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('created', self.gf('model_utils.fields.AutoCreatedField')(default=datetime.datetime.now)),
             ('modified', self.gf('model_utils.fields.AutoLastModifiedField')(default=datetime.datetime.now)),
-            ('_child_name', self.gf('django.db.models.fields.CharField')(max_length=100)),
-            ('torrent', self.gf('django.db.models.fields.related.OneToOneField')(related_name='upload', unique=True, to=orm['torrents.Torrent'])),
+            ('_subclass_name', self.gf('django.db.models.fields.CharField')(max_length=100)),
+            ('torrent', self.gf('django.db.models.fields.related.OneToOneField')(related_name=u'upload', unique=True, to=orm['torrents.Torrent'])),
             ('uploader', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
-            ('parent', self.gf('django.db.models.fields.related.ForeignKey')(related_name='uploads', to=orm['torrents.TorrentGroup'])),
+            ('parent_content_type', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['contenttypes.ContentType'])),
+            ('parent_object_id', self.gf('django.db.models.fields.PositiveIntegerField')()),
+            ('upload_group', self.gf('django.db.models.fields.related.ForeignKey')(related_name=u'uploads', to=orm['torrents.UploadGroup'])),
         ))
         db.send_create_signal(u'torrents', ['Upload'])
 
-        # Adding model 'TorrentGroup'
-        db.create_table(u'torrents_torrentgroup', (
+        # Adding model 'UploadGroup'
+        db.create_table(u'torrents_uploadgroup', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('created', self.gf('model_utils.fields.AutoCreatedField')(default=datetime.datetime.now)),
             ('modified', self.gf('model_utils.fields.AutoLastModifiedField')(default=datetime.datetime.now)),
-            ('_child_name', self.gf('django.db.models.fields.CharField')(max_length=100)),
+            ('_subclass_name', self.gf('django.db.models.fields.CharField')(max_length=100)),
         ))
-        db.send_create_signal(u'torrents', ['TorrentGroup'])
+        db.send_create_signal(u'torrents', ['UploadGroup'])
 
 
     def backwards(self, orm):
@@ -56,8 +58,8 @@ class Migration(SchemaMigration):
         # Deleting model 'Upload'
         db.delete_table(u'torrents_upload')
 
-        # Deleting model 'TorrentGroup'
-        db.delete_table(u'torrents_torrentgroup')
+        # Deleting model 'UploadGroup'
+        db.delete_table(u'torrents_uploadgroup')
 
 
     models = {
@@ -112,7 +114,7 @@ class Migration(SchemaMigration):
         },
         u'torrents.torrent': {
             'Meta': {'object_name': 'Torrent'},
-            'announce': ('django.db.models.fields.TextField', [], {}),
+            'announce': ('django.db.models.fields.URLField', [], {'max_length': '200'}),
             'announce_list': ('jsonfield.fields.JSONField', [], {'null': 'True', 'blank': 'True'}),
             'comment': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'created_by': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
@@ -120,29 +122,31 @@ class Migration(SchemaMigration):
             'encoding': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'files': ('jsonfield.fields.JSONField', [], {'null': 'True', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'is_private': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'length': ('django.db.models.fields.PositiveIntegerField', [], {'null': 'True', 'blank': 'True'}),
-            'md5sum': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
+            'md5sum': ('django.db.models.fields.CharField', [], {'max_length': '32', 'null': 'True', 'blank': 'True'}),
             'name': ('django.db.models.fields.TextField', [], {}),
-            'piece_length': ('django.db.models.fields.PositiveIntegerField', [], {}),
-            'pieces': ('django.db.models.fields.TextField', [], {'unique': 'True'}),
-            'private': ('django.db.models.fields.BooleanField', [], {'default': 'False'})
-        },
-        u'torrents.torrentgroup': {
-            'Meta': {'object_name': 'TorrentGroup'},
-            '_child_name': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'created': ('model_utils.fields.AutoCreatedField', [], {'default': 'datetime.datetime.now'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'modified': ('model_utils.fields.AutoLastModifiedField', [], {'default': 'datetime.datetime.now'})
+            'piece_length': ('django.db.models.fields.PositiveIntegerField', [], {'null': 'True', 'blank': 'True'}),
+            'pieces': ('django.db.models.fields.TextField', [], {'unique': 'True'})
         },
         u'torrents.upload': {
             'Meta': {'object_name': 'Upload'},
-            '_child_name': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
+            '_subclass_name': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'created': ('model_utils.fields.AutoCreatedField', [], {'default': 'datetime.datetime.now'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'modified': ('model_utils.fields.AutoLastModifiedField', [], {'default': 'datetime.datetime.now'}),
-            'parent': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'uploads'", 'to': u"orm['torrents.TorrentGroup']"}),
-            'torrent': ('django.db.models.fields.related.OneToOneField', [], {'related_name': "'upload'", 'unique': 'True', 'to': u"orm['torrents.Torrent']"}),
+            'parent_content_type': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['contenttypes.ContentType']"}),
+            'parent_object_id': ('django.db.models.fields.PositiveIntegerField', [], {}),
+            'torrent': ('django.db.models.fields.related.OneToOneField', [], {'related_name': "u'upload'", 'unique': 'True', 'to': u"orm['torrents.Torrent']"}),
+            'upload_group': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "u'uploads'", 'to': u"orm['torrents.UploadGroup']"}),
             'uploader': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']"})
+        },
+        u'torrents.uploadgroup': {
+            'Meta': {'object_name': 'UploadGroup'},
+            '_subclass_name': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
+            'created': ('model_utils.fields.AutoCreatedField', [], {'default': 'datetime.datetime.now'}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'modified': ('model_utils.fields.AutoLastModifiedField', [], {'default': 'datetime.datetime.now'})
         }
     }
 
