@@ -19,7 +19,7 @@ class TorrentTests(TestCase):
             orig_torrent_str = test_file.read()
 
         self.assertEquals(torrent.name, "archlinux-2013.04.01-dual.iso")
-        self.assertEquals(torrent.to_bencoded_string(), orig_torrent_str)
+        self.assertEquals(torrent.as_bencoded_string(), orig_torrent_str)
         # note that the torrent file is slightly modified
         # I've removed the url-list dictionary element
         # since we have no support for that
@@ -32,7 +32,7 @@ class TorrentTests(TestCase):
         torrent.pieces = "09bc090d67579eaed539c883b956d265a7975096"
         torrent.is_private = True
         torrent.length = 32768
-        torrent_str = torrent.to_bencoded_string()  # this shouldn't throw
+        torrent_str = torrent.as_bencoded_string()  # this shouldn't throw
         self.assertEquals(
             sha1(torrent_str), b"4d9e46d46fcbd23d89c7e1366646a1ca7052a2bb")
 
@@ -45,7 +45,7 @@ class TorrentTests(TestCase):
         torrent.is_private = True
         torrent.length = 32768
         torrent.md5sum = "0b784b963828308665f509173676bbcd"
-        torrent_str = torrent.to_bencoded_string()  # this shouldn't throw
+        torrent_str = torrent.as_bencoded_string()  # this shouldn't throw
         self.assertEquals(
             sha1(torrent_str), b"fe1fcf4a3c635445d6f998b0fdfab652465099f0")
 
@@ -74,7 +74,7 @@ class TorrentTests(TestCase):
                 'path': ['moop.dir'],
             }
         ]
-        torrent_str = torrent.to_bencoded_string()  # this shouldn't throw
+        torrent_str = torrent.as_bencoded_string()  # this shouldn't throw
         self.assertEquals(
             sha1(torrent_str), b"41c49ebb8d4aa7a977b9642da9512331a9abfe10")
 

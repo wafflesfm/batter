@@ -32,7 +32,7 @@ def view_torrent(request, pk):
 
 def download_torrent(request, pk):
     torrent = get_object_or_404(Torrent, pk=pk)
-    torrent_file = StringIO.StringIO(torrent.to_bencoded_string())
+    torrent_file = StringIO.StringIO(torrent.as_bencoded_string())
 
     response = HttpResponse(
         torrent_file.read(), content_type='application/x-bittorrent')
