@@ -24,7 +24,7 @@ class TorrentFieldTests(TestCase):
         field = TorrentField()
         torrent = field.clean(torrent_file)
 
-        self.assertEquals(torrent_data, torrent.to_bencoded_string())
+        self.assertEquals(torrent_data, torrent.as_bencoded_string())
 
     def test_invalid_torrent(self):
         field = TorrentField()

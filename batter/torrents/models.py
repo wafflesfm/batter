@@ -93,7 +93,7 @@ class Torrent(models.Model):
     def is_single_file(self):
         return self.files is None or len(self.files) <= 1
 
-    def to_bencoded_string(self, *args, **kwargs):
+    def as_bencoded_string(self, *args, **kwargs):
         torrent = {
             'announce': self.announce,
             'announce-list': self.announce_list,
