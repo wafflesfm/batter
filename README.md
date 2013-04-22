@@ -8,16 +8,10 @@ It makes Waffles (and other tasty things)!
 To develop on this project follow these steps:
 
 1. Download the code
-2. Create your working environment
-3. Install dependencies
-4. Create the database schema
-5. Run Batter
-6. Contribute changes!
-
-If you're familiar with [Vagrant](http://www.vagrantup.com/), then simply
-check the code out, `cd vagrant`, then `vagrant up` and you'll have a
-working development environment. You'll still need to perform steps 4 and 5
-from inside the `vagrant ssh` shell.
+2. Vagrant up!
+3. Create the database schema
+4. Run Batter
+5. Contribute changes!
 
 Download the code
 -----------------
@@ -28,47 +22,36 @@ You can get the most recent copy of Batter by cloning this repository:
 
 which will copy all of Batter into a new folder called `batter`.
 
-Create your Working Environment
--------------------------------
+Vagrant up!
+-----------
 
-First, make sure you have downloaded [virtualenv](http://www.virtualenv.org).
-Once that's installed, create a new virtualenv inside of the `batter`
-folder:
-
-    $ cd batter
-    $ virtualenv --distribute venv
-    $ source venv/bin/activate
-
-Your terminal prompt should now look like this:
-
-    (venv) $
-
-Install Dependencies
---------------------
-
-In your terminal, type
-
-    (venv) $ pip install -r requirements/local.txt
-
-You should see a list of packages being downloaded and installed.
+Vagrant is a way to create and configure lightweight, reproducible, and
+portable development environments. We use it to keep the Batter runtime
+in sync across our machines. [Download it](http://www.vagrantup.com/)
+and then `cd vagrant` followed by `vagrant up` to create your working
+development environment. Once your environment has been created, run
+`vagrant ssh` and follow the next two instructions.
 
 Create the Database Schema
 --------------------------
 
 In your terminal, type
 
-    (venv) $ python batter/manage.py syncdb
-    (venv) $ python batter/manage.py migrate
+    (batter) $ python batter/batter/manage.py syncdb
+    (batter) $ python batter/batter/manage.py migrate
 
 Run Batter
 ----------
 
 In your terminal, type
 
-    (venv) $ python batter/manage.py runserver
+    (batter) $ python batter/batter/manage.py runserver 0.0.0.0:8000
 
-You should now be able to open your browser to http://localhost:8000/ and
+You should now be able to open your browser to http://localhost:8080/ and
 use the site.
+
+Yes, you're running the server on port 8000 in your vagrant environment,
+but vagrant port-forwards environment:8000 to localhost:8080.
 
 Contribute changes!
 -------------------
