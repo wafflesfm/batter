@@ -1,8 +1,11 @@
+from __future__ import unicode_literals
+from django.utils.encoding import python_2_unicode_compatible
 from django.db import models
 from django.contrib.auth.models import User
 
 from model_utils.models import TimeStampedModel
 from taggit.managers import TaggableManager
+from django_countries import CountryField
 
 from torrents.models import Torrent
 
@@ -60,6 +63,7 @@ RELEASE_TYPES = (
 )
 
 
+@python_2_unicode_compatible
 class MusicUpload(TimeStampedModel):
     torrent = models.ForeignKey(Torrent)
     edition = models.ForeignKey('Edition')
@@ -69,10 +73,15 @@ class MusicUpload(TimeStampedModel):
     logfile = models.TextField(blank=True, null=True)
     uploader = models.ForeignKey(User)
 
-    def __unicode__(self):
-        return self.edition.release.name
+    def __str__(self):
+        return "{0} / {1} / {2}".format(
+            self.edition.release.name,
+            str(self.format),
+            str(self.bitrate)
+        )
 
 
+@python_2_unicode_compatible
 class Artist(TimeStampedModel):
     discogs_id = models.TextField()
     name = models.TextField()
@@ -84,7 +93,7 @@ class Artist(TimeStampedModel):
         null=True
     )
     artist_type = models.ForeignKey('ArtistType')
-    country = models.ForeignKey('Country')
+    country = CountryField()
     gender = models.TextField()
     disambiguation = models.TextField(blank=True, null=True)
     biography = models.TextField(blank=True, null=True)
@@ -92,33 +101,28 @@ class Artist(TimeStampedModel):
     birthdate = models.DateField(blank=True, null=True)
     deathdate = models.DateField(blank=True, null=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return str(self.name)
 
 
+@python_2_unicode_compatible
 class ArtistType(models.Model):
     name = models.TextField()
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 
+@python_2_unicode_compatible
 class ArtistAlias(models.Model):
     alias = models.TextField()
     artist = models.ForeignKey('Artist')
 
-    def __unicode__(self):
+    def __str__(self):
         return self.alias
 
 
-class Country(models.Model):
-    name = models.TextField()
-    code = models.TextField()
-
-    def __unicode__(self):
-        return "{} ({})".format(self.name, self.code)
-
-
+@python_2_unicode_compatible
 class Release(TimeStampedModel):
     discogs_id = models.TextField()
     name = models.TextField()
@@ -127,17 +131,27 @@ class Release(TimeStampedModel):
     release_type = models.TextField(choices=RELEASE_TYPES)
     tags = TaggableManager()
 
-    def __unicode__(self):
+    def __str__(self):
         return str(self.name)
 
 
+@python_2_unicode_compatible
 class Edition(TimeStampedModel):
     name = models.TextField()
     release = models.ForeignKey('Release')
-    country = models.ForeignKey('Country')
+    country = CountryField()
     label = models.TextField()
     date = models.DateField()
     barcode = models.TextField()
 
-    def __unicode__(self):
+    def __str__(self):
+        return str(self.name)
+
+
+@python_2_unicode_compatible
+class Label(TimeStampedModel):
+    name = models.TextField()
+    is_vanity = models.BooleanField()
+
+    def __str__(self):
         return str(self.name)

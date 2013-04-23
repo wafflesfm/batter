@@ -207,6 +207,7 @@ THIRD_PARTY_APPS = (
     # Database migration helpers:
     'south',
     'account',
+    'django_countries',
     'django_extensions',
     'django_forms_bootstrap',
     'notification',
