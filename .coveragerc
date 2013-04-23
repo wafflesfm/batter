@@ -7,3 +7,4 @@ omit = batter/*/migrations/*,batter/batter/settings/*,batter/batter/wsgi*
 exclude_lines =
     pragma: no cover
     def __unicode__
+    def __str__
