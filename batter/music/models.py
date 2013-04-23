@@ -1,5 +1,5 @@
 from __future__ import unicode_literals
-from django.utils.encoding import python_2_unicode_compatible
+from django.utils.encoding import python_2_unicode_compatible, force_text
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -75,9 +75,9 @@ class MusicUpload(TimeStampedModel):
 
     def __str__(self):
         return "{0} / {1} / {2}".format(
-            self.edition.release.name,
-            str(self.format),
-            str(self.bitrate)
+            self.edition.release,
+            force_text(self.format),
+            force_text(self.bitrate)
         )
 
 
@@ -102,7 +102,7 @@ class Artist(TimeStampedModel):
     deathdate = models.DateField(blank=True, null=True)
 
     def __str__(self):
-        return str(self.name)
+        return force_text(self.name)
 
 
 @python_2_unicode_compatible
@@ -110,7 +110,7 @@ class ArtistType(models.Model):
     name = models.TextField()
 
     def __str__(self):
-        return self.name
+        return force_text(self.name)
 
 
 @python_2_unicode_compatible
@@ -119,7 +119,7 @@ class ArtistAlias(models.Model):
     artist = models.ForeignKey('Artist')
 
     def __str__(self):
-        return self.alias
+        return force_text(self.alias)
 
 
 @python_2_unicode_compatible
@@ -132,7 +132,7 @@ class Release(TimeStampedModel):
     tags = TaggableManager()
 
     def __str__(self):
-        return str(self.name)
+        return force_text(self.name)
 
 
 @python_2_unicode_compatible
@@ -145,7 +145,7 @@ class Edition(TimeStampedModel):
     barcode = models.TextField()
 
     def __str__(self):
-        return str(self.name)
+        return force_text(self.name)
 
 
 @python_2_unicode_compatible
@@ -154,4 +154,4 @@ class Label(TimeStampedModel):
     is_vanity = models.BooleanField()
 
     def __str__(self):
-        return str(self.name)
+        return force_text(self.name)
