@@ -1,11 +1,12 @@
 from __future__ import unicode_literals
-from django.utils.encoding import python_2_unicode_compatible, force_text
-from django.db import models
-from django.contrib.auth.models import User
 
+from django.contrib.auth.models import User
+from django.db import models
+from django.utils.encoding import force_text, python_2_unicode_compatible
+
+from django_countries import CountryField
 from model_utils.models import TimeStampedModel
 from taggit.managers import TaggableManager
-from django_countries import CountryField
 
 from torrents.models import Torrent
 
