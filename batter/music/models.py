@@ -62,7 +62,7 @@ RELEASE_TYPES = (
 
 class MusicUpload(TimeStampedModel):
     torrent = models.ForeignKey(Torrent)
-    release = models.ForeignKey('Release')
+    edition = models.ForeignKey('Edition')
     format = models.TextField(choices=FORMAT_TYPES)
     bitrate = models.TextField(choices=BITRATE_TYPES)
     media = models.TextField(choices=MEDIA_TYPES)
@@ -70,7 +70,7 @@ class MusicUpload(TimeStampedModel):
     uploader = models.ForeignKey(User)
 
     def __unicode__(self):
-        return self.release.name
+        return self.edition.release.name
 
 
 class Artist(TimeStampedModel):
@@ -123,12 +123,21 @@ class Release(TimeStampedModel):
     discogs_id = models.TextField()
     name = models.TextField()
     artist_credit = models.ManyToManyField('Artist')
-    country = models.ForeignKey('Country')
-    date = models.DateField()
-    barcode = models.TextField()
     comment = models.TextField()
     release_type = models.TextField(choices=RELEASE_TYPES)
     tags = TaggableManager()
+
+    def __unicode__(self):
+        return str(self.name)
+
+
+class Edition(TimeStampedModel):
+    name = models.TextField()
+    release = models.ForeignKey('Release')
+    country = models.ForeignKey('Country')
+    label = models.TextField()
+    date = models.DateField()
+    barcode = models.TextField()
 
     def __unicode__(self):
         return str(self.name)
