@@ -54,7 +54,7 @@ RELEASE_TYPES = (
     ('anthology', 'Anthology'),
     ('compilation', 'Compilation'),
     ('djmix', 'DJ Mix'),
-    ('Single', 'single'),
+    ('single', 'Single'),
     ('livealbum', 'Live Album'),
     ('remix', 'Remix'),
     ('bootleg', 'Bootleg'),
