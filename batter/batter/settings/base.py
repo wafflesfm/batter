@@ -204,24 +204,23 @@ DJANGO_APPS = (
 )
 
 THIRD_PARTY_APPS = (
-    # Database migration helpers:
-    'south',
     'account',
     'django_countries',
     'django_extensions',
     'django_forms_bootstrap',
     'notification',
+    'postman',
+    'south',
     'taggit',
-    'postman'
 )
 
 # Apps specific for this project go here.
 LOCAL_APPS = (
-    'music',
     'batter',
+    'music',
+    'notifications',
     'profiles',
     'torrents',
-    'notifications',
 )
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
