@@ -120,6 +120,9 @@ class ArtistAlias(models.Model):
     alias = models.TextField()
     artist = models.ForeignKey('Artist')
 
+    class Meta:
+        verbose_name_plural = _('Artist aliases')
+
     def __str__(self):
         return force_text(self.alias)
 
