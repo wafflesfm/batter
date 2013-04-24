@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 from django.contrib.auth.models import User
 from django.db import models
 from django.utils.encoding import force_text, python_2_unicode_compatible
+from django.utils.translation import ugettext as _
 
 from django_countries import CountryField
 from model_utils.models import TimeStampedModel
@@ -28,39 +29,39 @@ BITRATE_TYPES = (
     ('apxvbr', 'APX (VBR)'),
     ('v0vbr', 'V0 (VBR)'),
     ('320', '320'),
-    ('lossless', 'Lossless'),
-    ('24bitlossless', '24Bit Losless'),
+    ('lossless', _('Lossless')),
+    ('24bitlossless', _('24Bit Losless')),
     ('v8vbr', 'V8 (VBR)'),
-    ('other', 'Other'),
+    ('other', _('Other')),
 
 )
 
 MEDIA_TYPES = (
     ('cd', 'CD'),
     ('dvd', 'DVD'),
-    ('vinyl', 'Vinyl'),
-    ('soundboard', 'Soundboard'),
+    ('vinyl', _('Vinyl')),
+    ('soundboard', _('Soundboard')),
     ('sacd', 'SACD'),
     ('dat', 'DAT'),
-    ('cassette', 'Cassette'),
+    ('cassette', _('Cassette')),
     ('web', 'WEB'),
     ('bluray', 'Blu-Ray'),
 )
 
 RELEASE_TYPES = (
-    ('album', 'Album'),
-    ('soundtrack', 'Soundtrack'),
-    ('ep', 'EP'),
-    ('anthology', 'Anthology'),
-    ('compilation', 'Compilation'),
-    ('djmix', 'DJ Mix'),
-    ('single', 'Single'),
-    ('livealbum', 'Live Album'),
-    ('remix', 'Remix'),
-    ('bootleg', 'Bootleg'),
-    ('interview', 'Interview'),
-    ('mixtape', 'Mixtape'),
-    ('unknown', 'Unknown')
+    ('album', _('Album')),
+    ('soundtrack', _('Soundtrack')),
+    ('ep', _('EP')),
+    ('anthology', _('Anthology')),
+    ('compilation', _('Compilation')),
+    ('djmix', _('DJ Mix')),
+    ('single', _('Single')),
+    ('livealbum', _('Live Album')),
+    ('remix', _('Remix')),
+    ('bootleg', _('Bootleg')),
+    ('interview', _('Interview')),
+    ('mixtape', _('Mixtape')),
+    ('unknown', _('Unknown'))
 )
 
 
