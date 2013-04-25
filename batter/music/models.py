@@ -30,7 +30,7 @@ BITRATE_TYPES = (
     ('v0vbr', 'V0 (VBR)'),
     ('320', '320'),
     ('lossless', _('Lossless')),
-    ('24bitlossless', _('24Bit Losless')),
+    ('24bitlossless', _('24Bit Lossless')),
     ('v8vbr', 'V8 (VBR)'),
     ('other', _('Other')),
 
