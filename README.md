@@ -78,7 +78,7 @@ Please follow these **coding standards** when writing code:
   make sure your code complies with Django [guidelines] [python3]
   on Python3 compatibility.
 
-[poocoo]: http://pocoo.org/internal/styleguide/#styleguide
+[poocoo]: http://www.pocoo.org/internal/styleguide/#styleguide
 [django]: http://docs.djangoproject.com/en/dev/internals/contributing/writing-code/coding-style
 [python3]: https://docs.djangoproject.com/en/dev/topics/python3
 
