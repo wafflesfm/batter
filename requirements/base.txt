@@ -6,6 +6,7 @@ django-model-utils==1.1.0
 logutils==0.3.3
 South==0.7.6
 django-user-accounts
+django-countries
 django-forms-bootstrap>=2.0.3
 BitTorrent-bencode
 jsonfield>=0.9.13
