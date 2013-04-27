@@ -9,7 +9,7 @@ from django_countries import CountryField
 from model_utils.models import TimeStampedModel
 from taggit.managers import TaggableManager
 
-from torrents.models import Torrent
+from torrents.models import Upload, UploadGroup
 
 
 FORMAT_TYPES = (
@@ -66,12 +66,11 @@ RELEASE_TYPES = (
 
 
 @python_2_unicode_compatible
-class MusicUpload(TimeStampedModel):
+class MusicUpload(Upload):
     class Meta:
-        verbose_name = _('MusicUpload')
-        verbose_name_plural = _('MusicUploads')
+        verbose_name = _('music upload')
+        verbose_name_plural = _('music uploads')
 
-    torrent = models.ForeignKey(Torrent)
     edition = models.ForeignKey('Edition')
     format = models.TextField(choices=FORMAT_TYPES)
     bitrate = models.TextField(choices=BITRATE_TYPES)
@@ -90,12 +89,12 @@ class MusicUpload(TimeStampedModel):
 @python_2_unicode_compatible
 class Artist(TimeStampedModel):
     class Meta:
-        verbose_name = _('Artist')
-        verbose_name_plural = _('MusicUploads')
+        verbose_name = _('artist')
+        verbose_name_plural = _('artists')
 
     name = models.TextField()
     sort_name = models.SlugField()
-    discogs_id = models.TextField()
+    discogs_id = models.PositiveIntegerField()
     country = CountryField()
     gender = models.TextField()
     disambiguation = models.TextField(blank=True, null=True)
@@ -117,8 +116,8 @@ class Artist(TimeStampedModel):
 @python_2_unicode_compatible
 class ArtistAlias(models.Model):
     class Meta:
-        verbose_name = _('Artist alias')
-        verbose_name_plural = _('Artist aliases')
+        verbose_name = _('artist alias')
+        verbose_name_plural = _('artist aliases')
 
     alias = models.TextField()
     artist = models.ForeignKey('Artist')
@@ -130,32 +129,30 @@ class ArtistAlias(models.Model):
 @python_2_unicode_compatible
 class Release(TimeStampedModel):
     class Meta:
-        verbose_name = _('Release')
-        verbose_name_plural = _('Releases')
+        verbose_name = _('release')
+        verbose_name_plural = _('releases')
 
     name = models.TextField()
-    discogs_id = models.TextField()
+    discogs_id = models.PositiveIntegerField()
     artist_credit = models.ManyToManyField('Artist')
     comment = models.TextField()
+    label = models.ForeignKey("Label")
     release_type = models.TextField(choices=RELEASE_TYPES)
-    tags = TaggableManager()
+    country = CountryField()
 
     def __str__(self):
         return force_text(self.name)
 
 
 @python_2_unicode_compatible
-class Edition(TimeStampedModel):
+class Master(UploadGroup):
     class Meta:
-        verbose_name = _('Edition')
-        verbose_name_plural = _('Editions')
+        verbose_name = _('master')
+        verbose_name_plural = _('masters')
 
     name = models.TextField()
-    release = models.ForeignKey('Release')
-    country = CountryField()
-    label = models.TextField()
     date = models.DateField()
-    barcode = models.TextField()
+    artist_credit = models.ManyToManyField('Artist')
 
     def __str__(self):
         return force_text(self.name)
@@ -164,8 +161,8 @@ class Edition(TimeStampedModel):
 @python_2_unicode_compatible
 class Label(TimeStampedModel):
     class Meta:
-        verbose_name = _('Label')
-        verbose_name_plural = _('Labels')
+        verbose_name = _('master')
+        verbose_name_plural = _('masters')
 
     name = models.TextField()
     parent_label = models.ForeignKey('Label', blank=True, null=True)

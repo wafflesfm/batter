@@ -31,3 +31,6 @@ venv
 # Coverage
 .coverage
 htmlcov/
+
+#pyCharm
+.idea/
