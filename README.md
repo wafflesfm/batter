@@ -68,6 +68,29 @@ add the wafflesfm repo as the `upstream` remote with
 (If you have commit access to wafflesfm/batter, you don't need to fork
 or add the upstream remote. The rest of this section still applies to you!)
 
+### Styleguide
+
+Please follow these **coding standards** when writing code:
+
+* Poocoo [styleguide] [poocoo] for all Python code.
+* For Django-specific code follow internal Django [coding style] [django].
+* Additionally, since we want Batter to be Python3 compatible,
+  make sure your code complies with Django [guidelines] [python3]
+  on Python3 compatibility.
+
+[poocoo]: http://www.pocoo.org/internal/styleguide/#styleguide
+[django]: http://docs.djangoproject.com/en/dev/internals/contributing/writing-code/coding-style
+[python3]: https://docs.djangoproject.com/en/dev/topics/python3
+
+### i18n
+
+We want Batter to be **translatable**, so please use Django's builtin
+internationalization
+[helpers](https://docs.djangoproject.com/en/dev/topics/i18n/translation)
+for all strings displayed to the user.
+
+### Workflow
+
 We use [git-flow](https://github.com/nvie/gitflow) for our git workflow.
 Debian/Ubuntu users can `sudo aptitude install git-flow`, and users of
 other operating systems can find installation instructions
