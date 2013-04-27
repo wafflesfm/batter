@@ -67,6 +67,10 @@ RELEASE_TYPES = (
 
 @python_2_unicode_compatible
 class MusicUpload(TimeStampedModel):
+    class Meta:
+        verbose_name = _('MusicUpload')
+        verbose_name_plural = _('MusicUploads')
+
     torrent = models.ForeignKey(Torrent)
     edition = models.ForeignKey('Edition')
     format = models.TextField(choices=FORMAT_TYPES)
@@ -85,31 +89,26 @@ class MusicUpload(TimeStampedModel):
 
 @python_2_unicode_compatible
 class Artist(TimeStampedModel):
-    discogs_id = models.TextField()
+    class Meta:
+        verbose_name = _('Artist')
+        verbose_name_plural = _('MusicUploads')
+
     name = models.TextField()
     sort_name = models.SlugField()
+    discogs_id = models.TextField()
+    country = CountryField()
+    gender = models.TextField()
+    disambiguation = models.TextField(blank=True, null=True)
+    biography = models.TextField(blank=True, null=True)
+    birthdate = models.DateField(blank=True, null=True)
+    deathdate = models.DateField(blank=True, null=True)
+    tags = TaggableManager()
     related_artists = models.ManyToManyField(
         'self',
         related_name="artist_related_artists",
         blank=True,
         null=True
     )
-    artist_type = models.ForeignKey('ArtistType')
-    country = CountryField()
-    gender = models.TextField()
-    disambiguation = models.TextField(blank=True, null=True)
-    biography = models.TextField(blank=True, null=True)
-
-    birthdate = models.DateField(blank=True, null=True)
-    deathdate = models.DateField(blank=True, null=True)
-
-    def __str__(self):
-        return force_text(self.name)
-
-
-@python_2_unicode_compatible
-class ArtistType(models.Model):
-    name = models.TextField()
 
     def __str__(self):
         return force_text(self.name)
@@ -117,11 +116,12 @@ class ArtistType(models.Model):
 
 @python_2_unicode_compatible
 class ArtistAlias(models.Model):
+    class Meta:
+        verbose_name = _('Artist alias')
+        verbose_name_plural = _('Artist aliases')
+
     alias = models.TextField()
     artist = models.ForeignKey('Artist')
-
-    class Meta:
-        verbose_name_plural = _('Artist aliases')
 
     def __str__(self):
         return force_text(self.alias)
@@ -129,8 +129,12 @@ class ArtistAlias(models.Model):
 
 @python_2_unicode_compatible
 class Release(TimeStampedModel):
-    discogs_id = models.TextField()
+    class Meta:
+        verbose_name = _('Release')
+        verbose_name_plural = _('Releases')
+
     name = models.TextField()
+    discogs_id = models.TextField()
     artist_credit = models.ManyToManyField('Artist')
     comment = models.TextField()
     release_type = models.TextField(choices=RELEASE_TYPES)
@@ -142,6 +146,10 @@ class Release(TimeStampedModel):
 
 @python_2_unicode_compatible
 class Edition(TimeStampedModel):
+    class Meta:
+        verbose_name = _('Edition')
+        verbose_name_plural = _('Editions')
+
     name = models.TextField()
     release = models.ForeignKey('Release')
     country = CountryField()
@@ -155,8 +163,15 @@ class Edition(TimeStampedModel):
 
 @python_2_unicode_compatible
 class Label(TimeStampedModel):
+    class Meta:
+        verbose_name = _('Label')
+        verbose_name_plural = _('Labels')
+
     name = models.TextField()
-    is_vanity = models.BooleanField()
+    parent_label = models.ForeignKey('Label', blank=True, null=True)
+
+    def is_vanity(self):
+        return True if self.parent_label else False
 
     def __str__(self):
         return force_text(self.name)
