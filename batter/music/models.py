@@ -150,7 +150,7 @@ class Release(DescendingModel, TimeStampedModel):
 
 
 @python_2_unicode_compatible
-class Master(DescendingModel, UploadGroup):
+class Master(UploadGroup):
     class Meta:
         verbose_name = _('master')
         verbose_name_plural = _('masters')
