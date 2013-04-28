@@ -138,6 +138,7 @@ class Release(TimeStampedModel):
     label = models.ForeignKey('Label')
     release_type = models.TextField(choices=RELEASE_TYPES)
     country = CountryField()
+    date = models.DateField()
     master = models.ForeignKey('Master')
 
     def __str__(self):
@@ -151,7 +152,6 @@ class Master(UploadGroup):
         verbose_name_plural = _('masters')
 
     name = models.TextField()
-    date = models.DateField()
     discogs_id = models.PositiveIntegerField()
     artist_credit = models.ManyToManyField('Artist')
     comment = models.TextField()
