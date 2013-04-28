@@ -9,7 +9,7 @@ from django_countries import CountryField
 from model_utils.models import TimeStampedModel
 from taggit.managers import TaggableManager
 
-from torrents.models import Upload, UploadGroup
+from torrents.models import Upload, UploadGroup, DescendingModel
 
 
 FORMAT_TYPES = (
@@ -76,6 +76,7 @@ class MusicUpload(Upload):
     bitrate = models.TextField(choices=BITRATE_TYPES)
     media = models.TextField(choices=MEDIA_TYPES)
     logfile = models.TextField(blank=True, null=True)
+    parent = models.ForeignKey('Release', related_name='_children')
 
     def __str__(self):
         return "{0} / {1} / {2}".format(
@@ -126,7 +127,7 @@ class ArtistAlias(models.Model):
 
 
 @python_2_unicode_compatible
-class Release(TimeStampedModel):
+class Release(DescendingModel, TimeStampedModel):
     class Meta:
         verbose_name = _('release')
         verbose_name_plural = _('releases')
@@ -139,14 +140,17 @@ class Release(TimeStampedModel):
     release_type = models.TextField(choices=RELEASE_TYPES)
     country = CountryField()
     date = models.DateField()
-    master = models.ForeignKey('Master')
+    parent = models.ForeignKey('Master', related_name='_children')
+
+    def get_child_model(self):
+        return MusicUpload
 
     def __str__(self):
         return force_text(self.name)
 
 
 @python_2_unicode_compatible
-class Master(UploadGroup):
+class Master(DescendingModel, UploadGroup):
     class Meta:
         verbose_name = _('master')
         verbose_name_plural = _('masters')
@@ -155,6 +159,9 @@ class Master(UploadGroup):
     discogs_id = models.PositiveIntegerField()
     artist_credit = models.ManyToManyField('Artist')
     comment = models.TextField()
+
+    def get_child_model(self):
+        return Release
 
     def __str__(self):
         return force_text(self.name)
