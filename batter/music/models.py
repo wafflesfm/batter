@@ -67,16 +67,16 @@ RELEASE_TYPES = (
 
 @python_2_unicode_compatible
 class MusicUpload(Upload):
-    class Meta:
-        verbose_name = _('music upload')
-        verbose_name_plural = _('music uploads')
-
     release = models.ForeignKey('Release')
     release_format = models.TextField(choices=FORMAT_TYPES)
     bitrate = models.TextField(choices=BITRATE_TYPES)
     media = models.TextField(choices=MEDIA_TYPES)
     logfile = models.TextField(blank=True, null=True)
     parent = models.ForeignKey('Release', related_name='_children')
+
+    class Meta:
+        verbose_name = _('music upload')
+        verbose_name_plural = _('music uploads')
 
     def __str__(self):
         return "{0} / {1} / {2}".format(
@@ -88,10 +88,6 @@ class MusicUpload(Upload):
 
 @python_2_unicode_compatible
 class Artist(TimeStampedModel):
-    class Meta:
-        verbose_name = _('artist')
-        verbose_name_plural = _('artists')
-
     name = models.TextField()
     sort_name = models.SlugField()
     discogs_id = models.PositiveIntegerField()
@@ -109,18 +105,22 @@ class Artist(TimeStampedModel):
         null=True
     )
 
+    class Meta:
+        verbose_name = _('artist')
+        verbose_name_plural = _('artists')
+
     def __str__(self):
         return force_text(self.name)
 
 
 @python_2_unicode_compatible
 class ArtistAlias(models.Model):
+    alias = models.TextField()
+    artist = models.ForeignKey('Artist')
+
     class Meta:
         verbose_name = _('artist alias')
         verbose_name_plural = _('artist aliases')
-
-    alias = models.TextField()
-    artist = models.ForeignKey('Artist')
 
     def __str__(self):
         return force_text(self.alias)
@@ -128,10 +128,6 @@ class ArtistAlias(models.Model):
 
 @python_2_unicode_compatible
 class Release(DescendingModel, TimeStampedModel):
-    class Meta:
-        verbose_name = _('release')
-        verbose_name_plural = _('releases')
-
     name = models.TextField()
     discogs_id = models.PositiveIntegerField()
     artist_credit = models.ManyToManyField('Artist')
@@ -142,6 +138,10 @@ class Release(DescendingModel, TimeStampedModel):
     date = models.DateField()
     parent = models.ForeignKey('Master', related_name='_children')
 
+    class Meta:
+        verbose_name = _('release')
+        verbose_name_plural = _('releases')
+
     def get_child_model(self):
         return MusicUpload
 
@@ -151,14 +151,14 @@ class Release(DescendingModel, TimeStampedModel):
 
 @python_2_unicode_compatible
 class Master(UploadGroup):
-    class Meta:
-        verbose_name = _('master')
-        verbose_name_plural = _('masters')
-
     name = models.TextField()
     discogs_id = models.PositiveIntegerField()
     artist_credit = models.ManyToManyField('Artist')
     comment = models.TextField()
+
+    class Meta:
+        verbose_name = _('master')
+        verbose_name_plural = _('masters')
 
     def get_child_model(self):
         return Release
@@ -169,12 +169,12 @@ class Master(UploadGroup):
 
 @python_2_unicode_compatible
 class Label(TimeStampedModel):
+    name = models.TextField()
+    parent_label = models.ForeignKey('Label', blank=True, null=True)
+
     class Meta:
         verbose_name = _('master')
         verbose_name_plural = _('masters')
-
-    name = models.TextField()
-    parent_label = models.ForeignKey('Label', blank=True, null=True)
 
     def is_vanity(self):
         return True if self.parent_label else False
