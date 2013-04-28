@@ -71,15 +71,15 @@ class MusicUpload(Upload):
         verbose_name = _('music upload')
         verbose_name_plural = _('music uploads')
 
-    edition = models.ForeignKey('Edition')
-    format = models.TextField(choices=FORMAT_TYPES)
+    release = models.ForeignKey('Release')
+    release_format = models.TextField(choices=FORMAT_TYPES)
     bitrate = models.TextField(choices=BITRATE_TYPES)
     media = models.TextField(choices=MEDIA_TYPES)
     logfile = models.TextField(blank=True, null=True)
 
     def __str__(self):
         return "{0} / {1} / {2}".format(
-            self.edition.release,
+            self.master.release,
             force_text(self.format),
             force_text(self.bitrate)
         )
@@ -135,9 +135,10 @@ class Release(TimeStampedModel):
     discogs_id = models.PositiveIntegerField()
     artist_credit = models.ManyToManyField('Artist')
     comment = models.TextField()
-    label = models.ForeignKey("Label")
+    label = models.ForeignKey('Label')
     release_type = models.TextField(choices=RELEASE_TYPES)
     country = CountryField()
+    master = models.ForeignKey('Master')
 
     def __str__(self):
         return force_text(self.name)
@@ -151,7 +152,9 @@ class Master(UploadGroup):
 
     name = models.TextField()
     date = models.DateField()
+    discogs_id = models.PositiveIntegerField()
     artist_credit = models.ManyToManyField('Artist')
+    comment = models.TextField()
 
     def __str__(self):
         return force_text(self.name)
