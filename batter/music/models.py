@@ -76,7 +76,6 @@ class MusicUpload(Upload):
     bitrate = models.TextField(choices=BITRATE_TYPES)
     media = models.TextField(choices=MEDIA_TYPES)
     logfile = models.TextField(blank=True, null=True)
-    uploader = models.ForeignKey(User)
 
     def __str__(self):
         return "{0} / {1} / {2}".format(
