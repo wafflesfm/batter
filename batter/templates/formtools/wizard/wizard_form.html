@@ -2,7 +2,7 @@
 {% load i18n %}
 
 {% block head_title %}
-{{ wizard.form.media }}
+Upload
 {% endblock %}
 
 {% block body %}
@@ -19,10 +19,10 @@
     {{ wizard.form.as_p }}
 {% endif %}
 {% if wizard.steps.prev %}
-<button name="wizard_goto_step" type="submit" value="{{ wizard.steps.first }}">{% trans "first step" %}</button>
-<button name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}">{% trans "prev step" %}</button>
+<button class="btn" name="wizard_goto_step" type="submit" value="{{ wizard.steps.first }}">{% trans "Start over" %}</button>
+<button class="btn" name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}">{% trans "Back" %}</button>
 {% endif %}
-<input type="submit" value="{% trans 'Next' %}"/>
+<input class="btn btn-primary" type="submit" value="{% trans 'Next' %}"/>
 </fieldset>
 </form>
 {% endblock %}
