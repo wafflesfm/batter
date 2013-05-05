@@ -5,18 +5,15 @@ from django.utils.translation import ugettext as _
 
 from torrents.forms import TorrentUploadForm
 
-SUPPORTED_TYPES = (
-    ('music', _('Music')),
-    ('applications', _('Applications')),
-    ('ebooks', _('E-Books')),
-    ('audiobooks', _('Audiobooks')),
-    ('comedy', _('Comedy / Spoken Word')),
-    ('comics', _('Comics')),
-)
+from .types import UPLOAD_TYPES, FORMAT_TYPES
 
-class TorrentTypeUploadForm(TorrentUploadForm):
-    type = forms.ChoiceField(SUPPORTED_TYPES)
+class TorrentTypeForm(TorrentUploadForm):
+    type = forms.ChoiceField(UPLOAD_TYPES)
 
-class MusicUploadForm(forms.Form):
+class ReleaseInfoForm(forms.Form):
     artist = forms.CharField()
     album = forms.CharField()
+    year = forms.CharField()
+
+class FileInfoForm(forms.Form):
+    format = forms.ChoiceField(FORMAT_TYPES)
