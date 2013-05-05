@@ -5,7 +5,7 @@ from django.utils.translation import ugettext as _
 
 from torrents.forms import TorrentUploadForm
 
-from .types import UPLOAD_TYPES, FORMAT_TYPES
+from .types import UPLOAD_TYPES, FORMAT_TYPES, BITRATE_TYPES, RELEASE_TYPES, MEDIA_TYPES
 
 class TorrentTypeForm(TorrentUploadForm):
     type = forms.ChoiceField(UPLOAD_TYPES)
@@ -17,3 +17,6 @@ class ReleaseInfoForm(forms.Form):
 
 class FileInfoForm(forms.Form):
     format = forms.ChoiceField(FORMAT_TYPES)
+    bitrate = forms.ChoiceField(BITRATE_TYPES)
+    release = forms.ChoiceField(RELEASE_TYPES)
+    media = forms.ChoiceField(MEDIA_TYPES)

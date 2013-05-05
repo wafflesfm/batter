@@ -9,7 +9,7 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.defaultfilters import slugify
 
-from ..forms import TorrentTypeUploadForm, MusicUploadForm
+from ..forms import TorrentTypeForm, ReleaseInfoForm, FileInfoForm
 
 def torrent_is_type(torrent_type):
     def check(wizard):
@@ -17,11 +17,14 @@ def torrent_is_type(torrent_type):
         return cleaned_data['type'] == torrent_type
     return check
 
-FORMS = [("torrenttype", TorrentTypeUploadForm),
-         ("artist", MusicUploadForm)]
+FORMS = [("torrenttype", TorrentTypeForm),
+         ("release", ReleaseInfoForm),
+         ("file", FileInfoForm),
+]
 
 CONDITIONS = {
-    "artist": torrent_is_type('music'),
+    "release": torrent_is_type('music'),
+    "file": torrent_is_type('music')
 }
 
 class MusicUploadWizard(CookieWizardView):
