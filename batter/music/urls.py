@@ -1,8 +1,15 @@
 from django.conf.urls import patterns, url
 
+from .views.upload import MusicUploadWizard, FORMS, CONDITIONS
 
 urlpatterns = patterns(
     '',
+    url(
+        r'upload/$',
+        # TODO: use form_list (see MusicUploadWizard definition)
+        MusicUploadWizard.as_view(FORMS, condition_dict=CONDITIONS),
+        name="upload_music"
+    ),
     url(
         r'api/discogs/artist/(?P<artist_id>\d+)/$',
         'music.views.api.discogs.get_artist',
