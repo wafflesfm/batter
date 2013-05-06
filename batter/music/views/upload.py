@@ -11,16 +11,22 @@ from django.template.defaultfilters import slugify
 
 from ..forms import TorrentTypeForm, ReleaseInfoForm, FileInfoForm
 
+
 def torrent_is_type(torrent_type):
     def check(wizard):
-        cleaned_data = wizard.get_cleaned_data_for_step('torrenttype') or {'type': 'none'}
+        cleaned_data = wizard.get_cleaned_data_for_step('torrent_type') or {'type': 'none'}
         return cleaned_data['type'] == torrent_type
     return check
 
-FORMS = [("torrenttype", TorrentTypeForm),
+FORMS = [("torrent_type", TorrentTypeForm),
          ("release", ReleaseInfoForm),
          ("file", FileInfoForm),
 ]
+
+TEMPLATES = {
+    "default": "music/upload/base.html",
+    "release": "music/upload/release.html",
+}
 
 CONDITIONS = {
     "release": torrent_is_type('music'),
@@ -32,6 +38,19 @@ class MusicUploadWizard(CookieWizardView):
 #          (currently in django dev version)
 #    form_list = [MusicUploadForm]
     file_storage = FileSystemStorage(location=os.path.join(settings.MEDIA_ROOT, 'tmp'))
+
+    def get_template_names(self):
+        try:
+            return [TEMPLATES[self.steps.current]]
+        except:
+            return [TEMPLATES["default"]]
+
+    def get_context_data(self, form, **kwargs):
+        context = super(MusicUploadWizard, self).get_context_data(form=form, **kwargs)
+        cleaned_data = self.get_cleaned_data_for_step("torrent_type") or {'torrent_file': None}
+        if cleaned_data["torrent_file"]:
+            context.update({'torrent_name': cleaned_data["torrent_file"].name})
+        return context
 
     def done(self, form_list, **kwargs):
         return HttpResponse('done')

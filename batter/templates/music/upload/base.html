@@ -7,6 +7,9 @@ Upload
 
 {% block body %}
 <p>Step {{ wizard.steps.step1 }} of {{ wizard.steps.count }}</p>
+
+{% block context %}{% endblock %}
+
 <form enctype="multipart/form-data" action="" method="post">{% csrf_token %}
 <fieldset>
 {{ wizard.management_form.as_p }}
