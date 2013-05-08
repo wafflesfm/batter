@@ -177,7 +177,7 @@ class Label(TimeStampedModel):
         verbose_name_plural = _('masters')
 
     def is_vanity(self):
-        return True if self.parent_label else False
+        return bool(self.parent_label)
 
     def __str__(self):
         return force_text(self.name)
