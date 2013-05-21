@@ -1,6 +1,5 @@
 from __future__ import unicode_literals
 
-from django.contrib.auth.models import User
 from django.db import models
 from django.utils.encoding import force_text, python_2_unicode_compatible
 from django.utils.translation import ugettext as _
@@ -170,7 +169,7 @@ class Master(UploadGroup):
 @python_2_unicode_compatible
 class Label(TimeStampedModel):
     name = models.TextField()
-    parent_label = models.ForeignKey('Label', blank=True, null=True)
+    parent_label = models.ForeignKey('self', blank=True, null=True)
 
     class Meta:
         verbose_name = _('master')
