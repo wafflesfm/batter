@@ -23,10 +23,10 @@ def view_artist(request, artist_slug):
     if generated_artist_slug != artist_slug:
         return redirect("music_view_artist", artist_slug=generated_artist_slug)
 
-    results = discog.search(artist_name, search_type="artist")
+    response = discog.search(artist_name, search_type="artist")
 
     artist_result = None
-    for result in results['results']:
+    for result in response['results']:
         # Check if the current resource is the desired artist.
         if result['title'] == artist_name:
             artist_result = result
@@ -59,10 +59,10 @@ def view_master(request, artist_slug, master_slug):
                         master_slug=generated_master_slug)
 
     query = "{0} - {1}".format(artist_name, master_name)
-    results = discog.search(query, search_type="master")
+    response = discog.search(query, search_type="master")
 
     master_result = None
-    for result in results['results']:
+    for result in response['results']:
         # Check if the current resource is the desired master.
         if result['title'] == query:
             master_result = result
