@@ -41,23 +41,4 @@ class DiscogsAPI(object):
         return self.make_request('/releases/{0}'.format(release_id))
 
     def get_releases(self, artist_id, page=1):
-        """Generator to fetch all releases for given `artist_id`
-
-        ``get_releases(45).next()`` returns a generator for all
-        pages of releases
-
-        takes options page argument for starting page
-        """
-        page = int(page)
-        page += 1
-
-        releases = self.make_request('/artists/{0}/releases'.format(artist_id))
-        yield releases
-
-        while page < releases['pagination']['pages']:
-            params = {'page': page}
-            yield self.make_request(
-                '/artists/{0}/releases'.format(artist_id),
-                **params
-            )
-            page += 1
+        return self.make_request('/artists/{0}/releases'.format(artist_id))
