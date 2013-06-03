@@ -9,8 +9,10 @@ from django.template.defaultfilters import slugify
 
 from .api.discogs import discog
 
+
 def search(request, q):
     return HttpResponse(q)
+
 
 def view_artist(request, artist_slug):
     artist_name = from_url(artist_slug)
@@ -38,6 +40,7 @@ def view_artist(request, artist_slug):
     artist = discog.get_artist(artist_result['id'])
 
     return render(request, 'music/view_artist.html', {'artist': artist})
+
 
 def view_master(request, artist_slug, master_slug):
     artist_name = from_url(artist_slug)
@@ -74,8 +77,10 @@ def view_master(request, artist_slug, master_slug):
 
     return render(request, 'music/view_master.html', {'master': master})
 
+
 def to_url(string):
     return urllib.quote_plus(string)
+
 
 def from_url(string):
     return urllib.unquote_plus(string)
