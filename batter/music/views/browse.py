@@ -1,6 +1,5 @@
 from __future__ import absolute_import, unicode_literals
 
-import pprint
 import urllib
 
 from django.http import HttpResponse
