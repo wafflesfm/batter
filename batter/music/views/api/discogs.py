@@ -53,7 +53,9 @@ def search_release(request):
     """
     page = request.GET.get('page', 1)
     query = request.GET.get('q', None)
-    return json_response(discog.search(query, page=page, search_type="release"))
+    return json_response(discog.search(query,
+                                       page=page,
+                                       search_type="release"))
 
 
 def search_discogs(request):
