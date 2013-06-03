@@ -34,6 +34,9 @@ class DiscogsAPI(object):
     def get_artist(self, artist_id):
         return self.make_request('/artists/{0}'.format(artist_id))
 
+    def get_master(self, master_id):
+        return self.make_request('/masters/{0}'.format(master_id))
+
     def get_release(self, release_id):
         return self.make_request('/releases/{0}'.format(release_id))
 
