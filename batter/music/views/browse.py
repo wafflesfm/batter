@@ -72,7 +72,7 @@ def view_master(request, artist_slug, master_slug):
     # Otherwise, get the desired master from the returned ID.
     master = discog.get_master(master_result['id'])
 
-    return HttpResponse(pprint.pformat(master))
+    return render(request, 'music/view_master.html', {'master': master})
 
 def to_url(string):
     return urllib.quote_plus(string)
