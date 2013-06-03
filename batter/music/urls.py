@@ -33,4 +33,19 @@ urlpatterns = patterns(
         'music.views.api.discogs.search_discogs',
         name="discogs_search"
     ),
+    url(
+        r'search/(?P<q>[^/]+)',
+        'music.views.browse.search',
+        name="music_view_search"
+    ),
+    url(
+        r'(?P<artist_slug>[^/]+)/(?P<master_slug>[^/]+)/$',
+        'music.views.browse.view_master',
+        name="music_view_master"
+    ),
+    url(
+        r'(?P<artist_slug>[^/]+)/$',
+        'music.views.browse.view_artist',
+        name='music_view_artist'
+    ),
 )

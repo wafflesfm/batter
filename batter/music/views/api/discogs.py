@@ -35,7 +35,7 @@ def get_artist_releases(request, artist_id):
     Takes options get param `page` for discogs pagination
     """
     page = request.GET.get('page', 1)
-    return json_response(discog.get_releases(artist_id, page=page).next())
+    return json_response(discog.get_releases(artist_id, page=page))
 
 
 def search_artist(request):
@@ -44,7 +44,7 @@ def search_artist(request):
     """
     page = request.GET.get('page', 1)
     query = request.GET.get('q', None)
-    return json_response(discog.search_artist(query, page=page).next())
+    return json_response(discog.search(query, page=page, search_type="artist"))
 
 
 def search_release(request):
@@ -53,11 +53,13 @@ def search_release(request):
     """
     page = request.GET.get('page', 1)
     query = request.GET.get('q', None)
-    return json_response(discog.search_release(query, page=page).next())
+    return json_response(discog.search(query,
+                                       page=page,
+                                       search_type="release"))
 
 
 def search_discogs(request):
     """Does a general paginated search on discogs"""
     page = request.GET.get('page', 1)
     query = request.GET.get('q', None)
-    return json_response(discog.search(query, page=page).next())
+    return json_response(discog.search(query, page=page))

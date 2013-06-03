@@ -69,17 +69,3 @@ class TestDiscogsAPI(TestCase):
             {'page': 3}
         ).status_code
         self.assertEqual(resp, 200)
-
-    def test_releases_generator(self):
-        releases = self.discogs.get_releases(99731)
-        self.assertEqual(releases.next()['pagination']['page'], 1)
-        self.assertEqual(releases.next()['pagination']['page'], 2)
-        self.assertEqual(releases.next()['pagination']['page'], 3)
-        self.assertEqual(releases.next()['pagination']['page'], 4)
-
-    def test_search_generator(self):
-        search = self.discogs.search('radio head')
-        self.assertEqual(search.next()['pagination']['page'], 1)
-        self.assertEqual(search.next()['pagination']['page'], 2)
-        self.assertEqual(search.next()['pagination']['page'], 3)
-        self.assertEqual(search.next()['pagination']['page'], 4)
