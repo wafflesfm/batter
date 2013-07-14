@@ -13,13 +13,19 @@ from torrents.models import Upload, UploadGroup, DescendingModel
 
 from .types import FORMAT_TYPES, BITRATE_TYPES, MEDIA_TYPES, RELEASE_TYPES
 
+optional = {'blank': True, 'null': True}
 
+
+@python_2_unicode_compatible
 class NamedTimeStampedModel(TimeStampedModel):
     name = models.TextField()
     slug = models.SlugField(max_length=255)
 
     class Meta:
         abstract = True
+
+    def __str__(self):
+        return self.name
 
 
 #~ @python_2_unicode_compatible
@@ -51,7 +57,6 @@ class NamedTimeStampedModel(TimeStampedModel):
 #~ 
 
 
-@python_2_unicode_compatible
 class Artist(NamedTimeStampedModel):
 #    discogs_id = models.PositiveIntegerField(unique=True)
 #    slug = models.TextField()
@@ -62,51 +67,40 @@ class Artist(NamedTimeStampedModel):
         verbose_name = _('artist')
         verbose_name_plural = _('artists')
 
-    def __str__(self):
-        return self.name
-    
     def get_absolute_url(self):
         return reverse('music_artist_detail', kwargs={'pk': self.pk, 'slug': self.slug})
-
-#~ 
-#~ 
-#~ @python_2_unicode_compatible
-#~ class Release(DescendingModel, TimeStampedModel):
-    #~ name = models.TextField()
-    #~ discogs_id = models.PositiveIntegerField()
-    #~ artist_credit = models.ManyToManyField('Artist')
-    #~ comment = models.TextField()
-    #~ label = models.ForeignKey('Label')
-    #~ release_type = models.TextField(choices=RELEASE_TYPES)
-    #~ country = CountryField()
-    #~ date = models.DateField()
-    #~ parent = models.ForeignKey('Master', related_name='_children')
-#~ 
-    #~ class Meta:
-        #~ verbose_name = _('release')
-        #~ verbose_name_plural = _('releases')
-#~ 
-    #~ def get_child_model(self):
-        #~ return MusicUpload
-#~ 
-    #~ def __str__(self):
-        #~ return force_text(self.name)
 
 
 @python_2_unicode_compatible
 class Master(NamedTimeStampedModel):
 #    discogs_id = models.PositiveIntegerField()
-    artists = models.ManyToManyField('Artist', blank=True, null=True)
+    artists = models.ManyToManyField('Artist', **optional)
+    main = models.ForeignKey('Release', related_name='+', **optional)
 
     class Meta:
         verbose_name = _('master')
         verbose_name_plural = _('masters')
 
-    def __str__(self):
-        return self.name
-
     def get_absolute_url(self):
         return reverse('music_master_detail', kwargs={'pk': self.pk, 'slug': self.slug})
+
+    def __str__(self):
+        return "{} - {}".format(", ".join(artist['name'] for artist in self.artists.all().values('name')), self.name)
+
+
+@python_2_unicode_compatible
+class Release(NamedTimeStampedModel):
+    master = models.ForeignKey('Master', **optional)
+
+    class Meta:
+        verbose_name = _('release')
+        verbose_name_plural = _('releases')
+
+    def get_absolute_url(self):
+        return reverse('music_release_detail', kwargs={'pk': self.pk, 'slug': self.slug})
+
+    def __str__(self):
+        return "{} ({})".format(self.master, self.name)
 
 
 #~ @python_2_unicode_compatible

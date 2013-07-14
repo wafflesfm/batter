@@ -5,7 +5,6 @@
 {% block body %}
 
 <h1>{{ artist.name }}</h1>
-<img src="{{ artist.images.0.uri150}}">
 <b>Masters</b>
 <ul>
 	{% for master in artist.master_set.all %}

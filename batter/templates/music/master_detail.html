@@ -4,7 +4,8 @@
 
 {% block body %}
 
-<h1>{{ master.name }}</h1>
+<h1>{{ master.main.name }}</h1>
+<b>Artist{{ master.artists.count|pluralize }}</b>
 <ul>
 	{% for artist in master.artists.all %}
 	<li><a href="{{ artist.get_absolute_url }}">{{ artist.name }}</a></li>
