@@ -1,6 +1,5 @@
 from __future__ import absolute_import, unicode_literals
 
-from django.conf import settings
 from django.core.urlresolvers import reverse
 
 from batter.test import LoggedInTestCase
@@ -11,7 +10,7 @@ from ..models import Torrent
 
 class UploadTorrentTests(LoggedInTestCase):
     def setUp(self):
-        self.url = reverse("torrents_upload")
+        self.url = reverse("torrents_torrent_upload")
         super(UploadTorrentTests, self).setUp()
 
     def test_get(self):
@@ -31,7 +30,7 @@ class UploadTorrentTests(LoggedInTestCase):
             fp.seek(0)
             response = self.client.post(self.url, {'torrent_file': fp})
 
-        self.assertEquals(response.status_code, 200)
+        self.assertEquals(response.status_code, 409)
         self.assertEquals(Torrent.objects.count(), 1)
 
     def test_logged_out(self):
@@ -46,7 +45,7 @@ class ViewTorrentTests(LoggedInTestCase):
             self.torrent = Torrent.from_torrent_file(test_file)
 
         self.torrent.save()
-        self.torrent_url = reverse("torrents_view", kwargs={
+        self.torrent_url = reverse("torrents_torrent_view", kwargs={
             'pk': self.torrent.pk
         })
         super(ViewTorrentTests, self).setUp()
@@ -56,13 +55,13 @@ class ViewTorrentTests(LoggedInTestCase):
         self.assertEquals(response.status_code, 200)
 
     def test_nonexisting_torrent(self):
-        response = self.client.get(reverse("torrents_view", kwargs={
-            'pk': 9001
+        response = self.client.get(reverse("torrents_torrent_view", kwargs={
+            'pk': 42
         }))
         self.assertEquals(response.status_code, 404)
 
 
-class GenerateTorrentTests(LoggedInTestCase):
+class DownloadTorrentTests(LoggedInTestCase):
     def setUp(self):
         with open(TEST_FILE_PATH, 'rb') as test_file:
             self.torrent = Torrent.from_torrent_file(test_file)
@@ -70,10 +69,9 @@ class GenerateTorrentTests(LoggedInTestCase):
             test_file.seek(0)
             self.raw_torrent = test_file.read()
         self.torrent.save()
-        self.torrent_url = reverse("torrents_generate", kwargs={
-            'pk': self.torrent.pk
-        })
-        super(GenerateTorrentTests, self).setUp()
+        self.torrent_url = reverse("torrents_torrent_download",
+                                   kwargs={'pk': self.torrent.pk})
+        super(DownloadTorrentTests, self).setUp()
 
     def test_existing_torrent(self):
         response = self.client.get(self.torrent_url)
@@ -88,7 +86,6 @@ class GenerateTorrentTests(LoggedInTestCase):
         self.assertEquals(response.content, self.raw_torrent)
 
     def test_nonexisting_torrent(self):
-        response = self.client.get(reverse("torrents_generate", kwargs={
-            'pk': 9001
-        }))
+        response = self.client.get(reverse("torrents_torrent_download",
+                                           kwargs={'pk': 42}))
         self.assertEquals(response.status_code, 404)

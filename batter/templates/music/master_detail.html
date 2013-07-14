@@ -1,0 +1,27 @@
+{% extends "site_base.html" %}
+
+{% block head_title %}{{ master.name}}{% endblock %}
+
+{% block body %}
+
+<h1>{{ master.main.name }}</h1>
+<b>Artist{{ master.artists.count|pluralize }}</b>
+<ul>
+	{% for artist in master.artists.all %}
+	<li><a href="{{ artist.get_absolute_url }}">{{ artist.name }}</a></li>
+	{% endfor %}
+</ul>
+<b>Formats</b>
+<ul>
+	{% for release in master.release_set.all %}
+	<li>
+		<b>{{ master.name }} - {{ release.name }}</b>
+		<ul>
+			{% for mu in release.musicupload_set.all %}
+			<li><a href="{{ mu.torrent.get_absolute_url }}">{{ mu }}</a></li>
+			{% endfor %}
+		</ul>
+	</li>
+	{% endfor %}
+</ul>
+{% endblock %}

@@ -35,3 +35,6 @@ htmlcov/
 #pyCharm
 .idea/
 src/
+/.project
+/.pydevproject
+/.settings/org.eclipse.core.resources.prefs

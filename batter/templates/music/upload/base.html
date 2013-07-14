@@ -1,0 +1,31 @@
+{% extends "site_base.html" %}
+{% load i18n %}
+
+{% block head_title %}
+Upload
+{% endblock %}
+
+{% block body %}
+<p>Step {{ wizard.steps.step1 }} of {{ wizard.steps.count }}</p>
+
+{% block context %}{% endblock %}
+
+<form enctype="multipart/form-data" action="" method="post">{% csrf_token %}
+<fieldset>
+{{ wizard.management_form.as_p }}
+{% if wizard.form.forms %}
+    {{ wizard.form.management_form.as_p }}
+    {% for form in wizard.form.forms %}
+        {{ form.as_p }}
+    {% endfor %}
+{% else %}
+    {{ wizard.form.as_p }}
+{% endif %}
+{% if wizard.steps.prev %}
+<button class="btn" name="wizard_goto_step" type="submit" value="{{ wizard.steps.first }}">{% trans "Start over" %}</button>
+<button class="btn" name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}">{% trans "Back" %}</button>
+{% endif %}
+<input class="btn btn-primary" type="submit" value="{% trans 'Next' %}"/>
+</fieldset>
+</form>
+{% endblock %}

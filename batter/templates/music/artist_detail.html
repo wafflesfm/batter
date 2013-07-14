@@ -1,0 +1,14 @@
+{% extends "site_base.html" %}
+
+{% block head_title %}{{ artist.name }}{% endblock %}
+
+{% block body %}
+
+<h1>{{ artist.name }}</h1>
+<b>Masters</b>
+<ul>
+	{% for master in artist.master_set.all %}
+	<li><a href="{{ master.get_absolute_url }}">{{ master.name }}</a></li>
+	{% endfor %}
+</ul>
+{% endblock %}
