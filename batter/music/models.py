@@ -84,10 +84,6 @@ class Release(NamedTimeStampedModel):
         verbose_name = _('release')
         verbose_name_plural = _('releases')
 
-    def get_absolute_url(self):
-        return reverse('music_release_detail',
-                       kwargs={'pk': self.pk, 'slug': self.slug})
-
     def __str__(self):
         return "{} ({})".format(self.master, self.name)
 
