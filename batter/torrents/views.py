@@ -3,7 +3,7 @@ from __future__ import absolute_import, unicode_literals
 import cStringIO as StringIO
 
 from django.http import HttpResponse
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
 from django.template.defaultfilters import slugify
 from django.views.generic.detail import DetailView
 
@@ -19,11 +19,15 @@ def upload_torrent(request):
             torrent.save()
             return redirect(torrent)
         except Exception:
-            # We've already uploaded this torrent
-            # (torrent.pieces is not unique in the database)
-            pass
+            resp = HttpResponse()
+            resp.status_code = 409
+            return resp
 
     return render(request, 'torrents/upload.html', {'form': form})
+
+
+class TorrentView(DetailView):
+    model = Torrent
 
 
 class DownloadView(DetailView):

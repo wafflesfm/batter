@@ -2,7 +2,7 @@
 {% load bootstrap_tags %}
 
 {% block body %}
-<form action="{% url 'torrents_upload' %}" method="post" enctype="multipart/form-data">
+<form action="{% url 'torrents_torrent_upload' %}" method="post" enctype="multipart/form-data">
     <legend>Upload Torrent</legend>
     {% csrf_token %}
     {{ form|as_bootstrap }}

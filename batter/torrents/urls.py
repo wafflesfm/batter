@@ -1,9 +1,12 @@
 from django.conf.urls import patterns, url
 
-from .views import DownloadView
+from .views import DownloadView, TorrentView
 
-urlpatterns = patterns('torrents.views',
-    url(r'upload/$', "upload_torrent", name="torrents_upload"),
-    url(r'download/(?P<pk>\d+)/$', DownloadView.as_view(),
+urlpatterns = patterns('',
+    url(r'(?P<pk>\d+)/$', TorrentView.as_view(),
+        name="torrents_torrent_view"),
+    url(r'upload/$', "torrents.views.upload_torrent",
+        name="torrents_torrent_upload"),
+    url(r'(?P<pk>\d+)/download/$', DownloadView.as_view(),
         name="torrents_torrent_download"),
 )
