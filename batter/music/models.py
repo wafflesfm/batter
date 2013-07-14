@@ -92,13 +92,13 @@ class Release(NamedTimeStampedModel):
 #~ class Label(TimeStampedModel):
     #~ name = models.TextField()
     #~ parent_label = models.ForeignKey('self', blank=True, null=True)
-#~ 
+
     #~ class Meta:
         #~ verbose_name = _('master')
         #~ verbose_name_plural = _('masters')
-#~ 
+
     #~ def is_vanity(self):
         #~ return bool(self.parent_label)
-#~ 
+
     #~ def __str__(self):
         #~ return force_text(self.name)

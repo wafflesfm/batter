@@ -69,9 +69,8 @@ class DownloadTorrentTests(LoggedInTestCase):
             test_file.seek(0)
             self.raw_torrent = test_file.read()
         self.torrent.save()
-        self.torrent_url = reverse("torrents_torrent_download", kwargs={
-            'pk': self.torrent.pk
-        })
+        self.torrent_url = reverse("torrents_torrent_download",
+                                   kwargs={'pk': self.torrent.pk})
         super(DownloadTorrentTests, self).setUp()
 
     def test_existing_torrent(self):
@@ -88,7 +87,5 @@ class DownloadTorrentTests(LoggedInTestCase):
 
     def test_nonexisting_torrent(self):
         response = self.client.get(reverse("torrents_torrent_download",
-                                           kwargs={
-                                                   'pk': 42
-                                                   }))
+                                           kwargs={'pk': 42}))
         self.assertEquals(response.status_code, 404)

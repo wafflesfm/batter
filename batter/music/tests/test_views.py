@@ -11,8 +11,7 @@ class ArtistDetailTests(LoggedInTestCase):
         self.artist = Artist(name="Okkervil River", slug="Okkervil-River")
         self.artist.save()
         self.url = reverse("music_artist_detail",
-                           kwargs={
-                                   'pk': self.artist.pk,
+                           kwargs={'pk': self.artist.pk,
                                    'slug': self.artist.slug})
         super(ArtistDetailTests, self).setUp()
 
@@ -22,8 +21,7 @@ class ArtistDetailTests(LoggedInTestCase):
 
     def test_slug_redirect(self):
         response = self.client.get(reverse("music_artist_detail",
-                                           kwargs={
-                                                   'pk': self.artist.pk,
+                                           kwargs={'pk': self.artist.pk,
                                                    'slug': 'wrong-slug'}))
         self.assertEquals(response.status_code, 301)
 
@@ -44,8 +42,7 @@ class MasterDetailTests(LoggedInTestCase):
         self.master.main = self.release
         self.master.save()
         self.url = reverse("music_master_detail",
-                           kwargs={
-                                   'pk': self.master.pk,
+                           kwargs={'pk': self.master.pk,
                                    'slug': self.master.slug})
         super(MasterDetailTests, self).setUp()
 
