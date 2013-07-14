@@ -198,6 +198,10 @@ DJANGO_APPS = (
     # Useful template tags:
     'django.contrib.humanize',
 
+    # Third-party app, but needs to be declared before d.c.admin.
+    # See https://django-grappelli.readthedocs.org/en/2.4.5/quickstart.html
+    'grappelli',
+
     # Admin panel and documentation:
     'django.contrib.admin',
     # 'django.contrib.admindocs',
