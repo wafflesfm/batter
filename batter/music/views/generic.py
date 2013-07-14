@@ -13,6 +13,11 @@ class EnforcingSlugDetailView(DetailView):
         current_url = resolve(request.path_info).url_name
 
         if self.get_object().slug != slug:
-            return redirect(current_url, pk=self.object.pk, slug=self.object.slug)
+            return redirect(current_url,
+                            pk=self.object.pk,
+                            slug=self.object.slug,
+                            permanent=True)
 
-        return super(EnforcingSlugDetailView, self).dispatch(request, *args, **kwargs)
+        return super(EnforcingSlugDetailView, self).dispatch(request,
+                                                             *args,
+                                                             **kwargs)
