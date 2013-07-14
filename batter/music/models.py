@@ -1,5 +1,6 @@
 from __future__ import unicode_literals
 
+from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils.encoding import force_text, python_2_unicode_compatible
 from django.utils.translation import ugettext as _
@@ -11,6 +12,15 @@ from taggit.managers import TaggableManager
 from torrents.models import Upload, UploadGroup, DescendingModel
 
 from .types import FORMAT_TYPES, BITRATE_TYPES, MEDIA_TYPES, RELEASE_TYPES
+
+
+class NamedTimeStampedModel(TimeStampedModel):
+    name = models.TextField()
+    slug = models.SlugField(max_length=255)
+
+    class Meta:
+        abstract = True
+
 
 #~ @python_2_unicode_compatible
 #~ class TaggableModel(models.Model):
@@ -40,20 +50,24 @@ from .types import FORMAT_TYPES, BITRATE_TYPES, MEDIA_TYPES, RELEASE_TYPES
         #~ )
 #~ 
 
+
 @python_2_unicode_compatible
-class Artist(TimeStampedModel):
-    discogs_id = models.PositiveIntegerField(unique=True)
-    slug = models.TextField()
-    name = models.TextField()
-    realname = models.TextField()
-    profile = models.TextField(blank=True)
+class Artist(NamedTimeStampedModel):
+#    discogs_id = models.PositiveIntegerField(unique=True)
+#    slug = models.TextField()
+#    realname = models.TextField()
+#    profile = models.TextField(blank=True)
 
     class Meta:
         verbose_name = _('artist')
         verbose_name_plural = _('artists')
 
     def __str__(self):
-        return force_text(self.name)
+        return self.name
+    
+    def get_absolute_url(self):
+        return reverse('music_artist_detail', kwargs={'pk': self.pk, 'slug': self.slug})
+
 #~ 
 #~ 
 #~ @python_2_unicode_compatible
@@ -77,26 +91,24 @@ class Artist(TimeStampedModel):
 #~ 
     #~ def __str__(self):
         #~ return force_text(self.name)
-#~ 
-#~ 
-#~ @python_2_unicode_compatible
-#~ class Master(UploadGroup):
-    #~ name = models.TextField()
-    #~ discogs_id = models.PositiveIntegerField()
-    #~ artist_credit = models.ManyToManyField('Artist')
-    #~ comment = models.TextField()
-#~ 
-    #~ class Meta:
-        #~ verbose_name = _('master')
-        #~ verbose_name_plural = _('masters')
-#~ 
-    #~ def get_child_model(self):
-        #~ return Release
-#~ 
-    #~ def __str__(self):
-        #~ return force_text(self.name)
-#~ 
-#~ 
+
+
+@python_2_unicode_compatible
+class Master(NamedTimeStampedModel):
+#    discogs_id = models.PositiveIntegerField()
+    artists = models.ManyToManyField('Artist', blank=True, null=True)
+
+    class Meta:
+        verbose_name = _('master')
+        verbose_name_plural = _('masters')
+
+    def __str__(self):
+        return self.name
+
+    def get_absolute_url(self):
+        return reverse('music_master_detail', kwargs={'pk': self.pk, 'slug': self.slug})
+
+
 #~ @python_2_unicode_compatible
 #~ class Label(TimeStampedModel):
     #~ name = models.TextField()

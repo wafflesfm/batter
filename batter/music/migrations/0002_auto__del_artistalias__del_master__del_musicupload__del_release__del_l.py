@@ -11,12 +11,6 @@ class Migration(SchemaMigration):
         # Deleting model 'ArtistAlias'
         db.delete_table(u'music_artistalias')
 
-        # Deleting model 'Master'
-        db.delete_table(u'music_master')
-
-        # Removing M2M table for field artist_credit on 'Master'
-        db.delete_table('music_master_artist_credit')
-
         # Deleting model 'MusicUpload'
         db.delete_table(u'music_musicupload')
 
@@ -29,8 +23,66 @@ class Migration(SchemaMigration):
         # Deleting model 'Label'
         db.delete_table(u'music_label')
 
+        # Deleting field 'Artist.profile'
+        db.delete_column(u'music_artist', 'profile')
+
+        # Deleting field 'Artist.discogs_id'
+        db.delete_column(u'music_artist', 'discogs_id')
+
+        # Deleting field 'Artist.realname'
+        db.delete_column(u'music_artist', 'realname')
+
+
+        # Changing field 'Artist.slug'
+        db.alter_column(u'music_artist', 'slug', self.gf('django.db.models.fields.SlugField')(max_length=255))
+        # Adding index on 'Artist', fields ['slug']
+        db.create_index(u'music_artist', ['slug'])
+
+        # Deleting field 'Master.comment'
+        db.delete_column(u'music_master', 'comment')
+
+        # Deleting field 'Master.discogs_id'
+        db.delete_column(u'music_master', 'discogs_id')
+
+        # Deleting field 'Master.uploadgroup_ptr'
+        db.delete_column(u'music_master', u'uploadgroup_ptr_id')
+
+        # Adding field 'Master.id'
+        db.add_column(u'music_master', u'id',
+                      self.gf('django.db.models.fields.AutoField')(default=-1, primary_key=True),
+                      keep_default=False)
+
+        # Adding field 'Master.created'
+        db.add_column(u'music_master', 'created',
+                      self.gf('model_utils.fields.AutoCreatedField')(default=datetime.datetime.now),
+                      keep_default=False)
+
+        # Adding field 'Master.modified'
+        db.add_column(u'music_master', 'modified',
+                      self.gf('model_utils.fields.AutoLastModifiedField')(default=datetime.datetime.now),
+                      keep_default=False)
+
+        # Adding field 'Master.slug'
+        db.add_column(u'music_master', 'slug',
+                      self.gf('django.db.models.fields.SlugField')(default='master', max_length=255),
+                      keep_default=False)
+
+        # Removing M2M table for field artist_credit on 'Master'
+        db.delete_table('music_master_artist_credit')
+
+        # Adding M2M table for field artists on 'Master'
+        db.create_table(u'music_master_artists', (
+            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
+            ('master', models.ForeignKey(orm[u'music.master'], null=False)),
+            ('artist', models.ForeignKey(orm[u'music.artist'], null=False))
+        ))
+        db.create_unique(u'music_master_artists', ['master_id', 'artist_id'])
+
 
     def backwards(self, orm):
+        # Removing index on 'Artist', fields ['slug']
+        db.delete_index(u'music_artist', ['slug'])
+
         # Adding model 'ArtistAlias'
         db.create_table(u'music_artistalias', (
             ('alias', self.gf('django.db.models.fields.TextField')()),
@@ -38,23 +90,6 @@ class Migration(SchemaMigration):
             ('artist', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['music.Artist'])),
         ))
         db.send_create_signal(u'music', ['ArtistAlias'])
-
-        # Adding model 'Master'
-        db.create_table(u'music_master', (
-            ('comment', self.gf('django.db.models.fields.TextField')()),
-            ('name', self.gf('django.db.models.fields.TextField')()),
-            ('discogs_id', self.gf('django.db.models.fields.PositiveIntegerField')()),
-            (u'uploadgroup_ptr', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['torrents.UploadGroup'], unique=True, primary_key=True)),
-        ))
-        db.send_create_signal(u'music', ['Master'])
-
-        # Adding M2M table for field artist_credit on 'Master'
-        db.create_table(u'music_master_artist_credit', (
-            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-            ('master', models.ForeignKey(orm[u'music.master'], null=False)),
-            ('artist', models.ForeignKey(orm[u'music.artist'], null=False))
-        ))
-        db.create_unique(u'music_master_artist_credit', ['master_id', 'artist_id'])
 
         # Adding model 'MusicUpload'
         db.create_table(u'music_musicupload', (
@@ -102,18 +137,70 @@ class Migration(SchemaMigration):
         ))
         db.send_create_signal(u'music', ['Label'])
 
+        # Adding field 'Artist.profile'
+        db.add_column(u'music_artist', 'profile',
+                      self.gf('django.db.models.fields.TextField')(default='', blank=True),
+                      keep_default=False)
+
+
+        # User chose to not deal with backwards NULL issues for 'Artist.discogs_id'
+        raise RuntimeError("Cannot reverse this migration. 'Artist.discogs_id' and its values cannot be restored.")
+
+        # User chose to not deal with backwards NULL issues for 'Artist.realname'
+        raise RuntimeError("Cannot reverse this migration. 'Artist.realname' and its values cannot be restored.")
+
+        # Changing field 'Artist.slug'
+        db.alter_column(u'music_artist', 'slug', self.gf('django.db.models.fields.TextField')())
+
+        # User chose to not deal with backwards NULL issues for 'Master.comment'
+        raise RuntimeError("Cannot reverse this migration. 'Master.comment' and its values cannot be restored.")
+
+        # User chose to not deal with backwards NULL issues for 'Master.discogs_id'
+        raise RuntimeError("Cannot reverse this migration. 'Master.discogs_id' and its values cannot be restored.")
+
+        # User chose to not deal with backwards NULL issues for 'Master.uploadgroup_ptr'
+        raise RuntimeError("Cannot reverse this migration. 'Master.uploadgroup_ptr' and its values cannot be restored.")
+        # Deleting field 'Master.id'
+        db.delete_column(u'music_master', u'id')
+
+        # Deleting field 'Master.created'
+        db.delete_column(u'music_master', 'created')
+
+        # Deleting field 'Master.modified'
+        db.delete_column(u'music_master', 'modified')
+
+        # Deleting field 'Master.slug'
+        db.delete_column(u'music_master', 'slug')
+
+        # Adding M2M table for field artist_credit on 'Master'
+        db.create_table(u'music_master_artist_credit', (
+            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
+            ('master', models.ForeignKey(orm[u'music.master'], null=False)),
+            ('artist', models.ForeignKey(orm[u'music.artist'], null=False))
+        ))
+        db.create_unique(u'music_master_artist_credit', ['master_id', 'artist_id'])
+
+        # Removing M2M table for field artists on 'Master'
+        db.delete_table('music_master_artists')
+
 
     models = {
         u'music.artist': {
             'Meta': {'object_name': 'Artist'},
             'created': ('model_utils.fields.AutoCreatedField', [], {'default': 'datetime.datetime.now'}),
-            'discogs_id': ('django.db.models.fields.PositiveIntegerField', [], {'unique': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'modified': ('model_utils.fields.AutoLastModifiedField', [], {'default': 'datetime.datetime.now'}),
             'name': ('django.db.models.fields.TextField', [], {}),
-            'profile': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
-            'realname': ('django.db.models.fields.TextField', [], {}),
-            'slug': ('django.db.models.fields.TextField', [], {})
+            'slug': ('django.db.models.fields.SlugField', [], {'max_length': '255'})
+        },
+        u'music.master': {
+            'Meta': {'object_name': 'Master'},
+            'artists': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'to': u"orm['music.Artist']", 'null': 'True', 'blank': 'True'}),
+            'created': ('model_utils.fields.AutoCreatedField', [], {'default': 'datetime.datetime.now'}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'modified': ('model_utils.fields.AutoLastModifiedField', [], {'default': 'datetime.datetime.now'}),
+            'name': ('django.db.models.fields.TextField', [], {}),
+            'slug': ('django.db.models.fields.SlugField', [], {'max_length': '255'})
         }
     }
 

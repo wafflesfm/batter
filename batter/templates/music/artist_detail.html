@@ -6,10 +6,10 @@
 
 <h1>{{ artist.name }}</h1>
 <img src="{{ artist.images.0.uri150}}">
-<dl>
-    <dt>Full Name</dt>
-    <dd>{{ artist.realname }}</dd>
-    <dt>Profile</dt>
-    <dd>{{ artist.profile }}</dd>
-</dl>
+<b>Masters</b>
+<ul>
+	{% for master in artist.master_set.all %}
+	<li><a href="{{ master.get_absolute_url }}">{{ master.name }}</a></li>
+	{% endfor %}
+</ul>
 {% endblock %}
