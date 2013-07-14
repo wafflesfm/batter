@@ -17,6 +17,7 @@ pyyaml
 django-filter
 requests
 django-taggit
+django-grappelli==2.4.5
 
 # django-postman
 # this is a PINNED development version
