@@ -3,7 +3,8 @@ from django.conf.urls import patterns, url
 from .views import ArtistView, MasterView
 from .views.upload import MusicUploadWizard, FORMS, CONDITIONS
 
-urlpatterns = patterns('',
+urlpatterns = patterns(
+    '',
     url(r'^upload/$',
         # TODO: use form_list (see MusicUploadWizard definition)
         MusicUploadWizard.as_view(FORMS, condition_dict=CONDITIONS),
