@@ -11,7 +11,7 @@ from .models import Torrent
 
 
 def upload_torrent(request):
-    form = TorrentUploadForm(request.POST, request.FILES)
+    form = TorrentUploadForm(request.POST or None, request.FILES or None)
     if form.is_valid():
         torrent = form.cleaned_data['torrent_file']
         try:

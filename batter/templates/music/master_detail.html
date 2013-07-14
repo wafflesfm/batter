@@ -11,4 +11,10 @@
 	<li><a href="{{ artist.get_absolute_url }}">{{ artist.name }}</a></li>
 	{% endfor %}
 </ul>
+<b>Formats</b>
+<ul>
+	{% for release in master.release_set.all %}
+	<li>{{ master.name }} - {{ release.name }}</li>
+	{% endfor %}
+</ul>
 {% endblock %}

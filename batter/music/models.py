@@ -3,15 +3,9 @@ from __future__ import unicode_literals
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils.encoding import force_text, python_2_unicode_compatible
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 
-from django_countries import CountryField
 from model_utils.models import TimeStampedModel
-from taggit.managers import TaggableManager
-
-from torrents.models import Upload, UploadGroup, DescendingModel
-
-from .types import FORMAT_TYPES, BITRATE_TYPES, MEDIA_TYPES, RELEASE_TYPES
 
 optional = {'blank': True, 'null': True}
 
@@ -28,33 +22,22 @@ class NamedTimeStampedModel(TimeStampedModel):
         return self.name
 
 
-#~ @python_2_unicode_compatible
-#~ class TaggableModel(models.Model):
-    #~ tags = TaggableManager()
-    #~ 
-    #~ class Meta:
-        #~ abstract = True
+@python_2_unicode_compatible
+class MusicUpload(TimeStampedModel):
+    release = models.ForeignKey('Release')
+    torrent = models.OneToOneField('torrents.Torrent')
+#    release_format = models.TextField(choices=FORMAT_TYPES)
+#    bitrate = models.TextField(choices=BITRATE_TYPES)
+#    media = models.TextField(choices=MEDIA_TYPES)
+#    logfile = models.TextField(blank=True, null=True)
+#    parent = models.ForeignKey('Release', related_name='_children')
 
-#~ @python_2_unicode_compatible
-#~ class MusicUpload(Upload):
-    #~ release = models.ForeignKey('Release')
-    #~ release_format = models.TextField(choices=FORMAT_TYPES)
-    #~ bitrate = models.TextField(choices=BITRATE_TYPES)
-    #~ media = models.TextField(choices=MEDIA_TYPES)
-    #~ logfile = models.TextField(blank=True, null=True)
-    #~ parent = models.ForeignKey('Release', related_name='_children')
-#~ 
-    #~ class Meta:
-        #~ verbose_name = _('music upload')
-        #~ verbose_name_plural = _('music uploads')
-#~ 
-    #~ def __str__(self):
-        #~ return "{0} / {1} / {2}".format(
-            #~ self.master.release,
-            #~ force_text(self.format),
-            #~ force_text(self.bitrate)
-        #~ )
-#~ 
+    class Meta:
+        verbose_name = _('music upload')
+        verbose_name_plural = _('music uploads')
+
+    def __str__(self):
+        return "{} - {}".format(self.release, self.torrent)
 
 
 class Artist(NamedTimeStampedModel):
@@ -68,7 +51,8 @@ class Artist(NamedTimeStampedModel):
         verbose_name_plural = _('artists')
 
     def get_absolute_url(self):
-        return reverse('music_artist_detail', kwargs={'pk': self.pk, 'slug': self.slug})
+        return reverse('music_artist_detail',
+                       kwargs={'pk': self.pk, 'slug': self.slug})
 
 
 @python_2_unicode_compatible
@@ -82,7 +66,8 @@ class Master(NamedTimeStampedModel):
         verbose_name_plural = _('masters')
 
     def get_absolute_url(self):
-        return reverse('music_master_detail', kwargs={'pk': self.pk, 'slug': self.slug})
+        return reverse('music_master_detail',
+                       kwargs={'pk': self.pk, 'slug': self.slug})
 
     def __str__(self):
         return "{} - {}".format(", ".join(artist['name'] for artist in self.artists.all().values('name')), self.name)
@@ -97,7 +82,8 @@ class Release(NamedTimeStampedModel):
         verbose_name_plural = _('releases')
 
     def get_absolute_url(self):
-        return reverse('music_release_detail', kwargs={'pk': self.pk, 'slug': self.slug})
+        return reverse('music_release_detail',
+                       kwargs={'pk': self.pk, 'slug': self.slug})
 
     def __str__(self):
         return "{} ({})".format(self.master, self.name)
