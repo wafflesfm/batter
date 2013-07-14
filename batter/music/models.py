@@ -2,7 +2,7 @@ from __future__ import unicode_literals
 
 from django.core.urlresolvers import reverse
 from django.db import models
-from django.utils.encoding import force_text, python_2_unicode_compatible
+from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
 
 from model_utils.models import TimeStampedModel
@@ -70,7 +70,10 @@ class Master(NamedTimeStampedModel):
                        kwargs={'pk': self.pk, 'slug': self.slug})
 
     def __str__(self):
-        return "{} - {}".format(", ".join(artist['name'] for artist in self.artists.all().values('name')), self.name)
+        return "{} - {}".format(", ".join(artist.name
+                                          for artist
+                                          in self.artists.all()),
+                                self.name)
 
 
 @python_2_unicode_compatible

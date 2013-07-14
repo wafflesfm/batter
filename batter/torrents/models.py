@@ -56,7 +56,7 @@ class Torrent(models.Model):
                     "the files tracked by the torrent"))
 
     def get_absolute_url(self):
-        return reverse('torrents_view', args=[self.pk])
+        return reverse('torrents_torrent_download', args=[self.pk])
 
     @classmethod
     def from_torrent_file(cls, torrent_file, *args, **kwargs):
