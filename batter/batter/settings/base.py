@@ -209,13 +209,11 @@ DJANGO_APPS = (
 
 THIRD_PARTY_APPS = (
     'account',
-    'django_countries',
     'django_extensions',
     'django_forms_bootstrap',
     'notification',
     'postman',
     'south',
-    'taggit',
 )
 
 # Apps specific for this project go here.
