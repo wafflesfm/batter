@@ -1,0 +1,11 @@
+- extends "search/results/search_result_base.haml"
+- load static
+
+- block result-logo
+  %img.media-object{src: 'http://placehold.it/64', width: 64}
+
+- block result-name
+  = result.object.name
+
+- block result-body
+  %p= result.object.modified

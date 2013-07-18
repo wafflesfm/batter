@@ -1,0 +1,30 @@
+- extends "site_base.html"
+- load widget_tweaks
+
+- block body
+  %form.form-search{method:'get', action:'.'}
+    .row
+      .span7.offset2
+        = form.non_field_errors
+        = form.q.errors
+        {% render_field form.q class+="span6 search-query" autocomplete="off" placeholder="Search for artists, albums, and more"%}
+        %input.btn{type:'submit', value:'Search'}
+  - if query
+    .row
+      .span7.offset2
+        #results
+          %h4 Showing {{ page.start_index }} &ndash; {{ page.end_index }} of {{ page.paginator.count }} results for "{{ query }}"
+          - for result in page.object_list
+            - include "search/results/search_result.haml"
+          - empty
+            %b No results found for "{{ query }}."
+          - if page.has_previous or page.has_next
+            %div
+              - if page.has_previous
+                %a{href:'?q={{ query }}&amp;page={{ page.previous_page_number }}'}
+                  &laquo; Previous
+              - if page.has_previous and page.has_next
+                |
+              - if page.has_next
+                %a{href:'?q={{ query }}&amp;page={{ page.next_page_number }}'}
+                  Next &raquo;

@@ -70,3 +70,13 @@ DEBUG_TOOLBAR_CONFIG = {
 ## Tracker CONFIGURATION
 TRACKER_ANNOUNCE = 'http://localhost:7070/announce/'
 ##
+
+########## HAYSTACK SEARCH CONFIGURATION
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',  # noqa
+        'URL': 'http://127.0.0.1:9200/',
+        'INDEX_NAME': 'haystack',
+    },
+}
+########## END HAYSTACK SEARCH CONFIGURATION

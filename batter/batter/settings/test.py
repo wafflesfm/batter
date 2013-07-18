@@ -16,3 +16,12 @@ DATABASES = {
         "PORT": "",
     },
 }
+
+########## HAYSTACK SEARCH CONFIGURATION
+# "Simple" backend to avoid configuration for tests.
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.simple_backend.SimpleEngine',
+    },
+}
+########## END HAYSTACK SEARCH CONFIGURATION
