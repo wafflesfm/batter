@@ -55,7 +55,7 @@ class NotificationAPITests(BaseNotificationTests):
     def test_list_authentication(self):
         response = self.fetch_list_response()
         self.assertEquals(response.status_code, 302)
-        self.assertIn('login', response['Location'])
+        self.assertIn('signin', response['Location'])
 
     def test_list_pagination(self):
         self.generate_bunk(60)
@@ -89,7 +89,7 @@ class NotificationHTMLTests(BaseNotificationTests):
     def test_list_authentication(self):
         response = self.fetch_list_response()
         self.assertEquals(response.status_code, 302)
-        self.assertIn('login', response['Location'])
+        self.assertIn('signin', response['Location'])
 
     def test_list_pagination(self):
         self.generate_bunk(60)
