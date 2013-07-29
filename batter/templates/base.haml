@@ -1,0 +1,54 @@
+- load staticfiles
+
+!!! 5
+%html{lang: '{{ LANGUAGE_CODE }}'}
+  %head
+    %meta{charset: 'utf-8'}
+    %title
+      - block title-base
+        - block title
+        - if SITE_NAME
+          \- {{ SITE_NAME }}
+    %meta{name: 'viewport', content: 'width=device-width, initial-scale=1.0'}
+    %meta{name: 'description', content: ''}
+    %meta{name: 'author', content: ''}
+
+    - block css-base
+      %link{href: '{% static "css/bootstrap.min.css" %}', rel: 'stylesheet', type: 'text/css'}
+      %link{href: '{% static "css/bootstrap-responsive.min.css" %}', rel: 'stylesheet', type: 'text/css'}
+      %link{href: '{% static "css/project.css" %}', rel: 'stylesheet', type: 'text/css'}
+      - block css
+
+    /[if lt IE9]
+      %script{src: 'http://html5shim.googlecode.com/svn/trunk/html5.js'}
+
+  %body
+    - block navbar-base
+      .navbar.navbar-inverse.navbar-static-top
+        .navbar-inner
+          .container
+            - block navbar
+              %a.btn.btn-navbar{data-toggle:'collapse', data-target:'.nav-collapse'}
+                %span.icon-bar
+                %span.icon-bar
+                %span.icon-bar
+              .nav-collapse.collapse
+    - block header-base
+      %header
+        .container
+          - block header
+            .row
+              .span2
+                - block xbrand
+                  %h3.brand.muted
+              .span10
+                - block search-form
+    - block content-base
+      .container
+        - block content
+
+    - block js-base
+      %script{src: '{% static "js/jquery.min.js" %}'}
+      %script{src: '{% static "js/bootstrap.min.js" %}'}
+      %script{src: '{% static "js/project.js" %}'}
+      - block js
