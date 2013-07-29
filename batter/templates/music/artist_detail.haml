@@ -1,0 +1,12 @@
+- extends "base.haml"
+
+- block title
+  = artist.name
+
+- block content
+  %h1= artist.name
+  %b Masters
+  %ul
+    - for master in artist.master_set.all
+      %li
+        <a href="{{ master.get_absolute_url }}">{{ master.name }}</a>

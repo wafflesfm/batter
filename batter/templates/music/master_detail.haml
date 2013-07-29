@@ -1,0 +1,21 @@
+- extends "base.haml"
+
+- block title
+  = master.name
+
+- block content
+  %h1= master.main.name
+  %b Artist{{ master.artists.count|pluralize }}
+  %ul
+    - for artist in master.artists.all
+      %li
+        <a href="{{ artist.get_absolute_url }}">{{ artist.name }}</a>
+  %b Formats
+  %ul
+    - for release in master.release_set.all
+      %li
+        %b {{ master.name }} - {{ release.name }}
+     	  %ul
+          - for mu in release.musicupload_set.all
+            %li
+              <a href="{{ mu.torrent.get_absolute_url }}">{{ mu }}</a>
