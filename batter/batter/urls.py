@@ -12,8 +12,7 @@ urlpatterns = patterns(
     # Examples:
     # url(r'^$', 'batter.views.home', name='home'),
     # url(r'^batter/', include('batter.foo.urls')),
-    url(r'^messages/', include('postman.urls')),
-    url(r"^account/", include("account.urls")),
+    url(r'^accounts/', include('userena.urls')),
     url(r"^notifications/", include("notifications.urls")),
     url(r'^torrents/', include("torrents.urls")),
     url(r'^music/', include("music.urls")),

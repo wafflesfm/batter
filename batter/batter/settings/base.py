@@ -6,10 +6,12 @@ from sys import path
 import os
 
 #url to login
-LOGIN_URL = "/account/login/"
+LOGIN_REDIRECT_URL = '/accounts/%(username)s/'
+LOGIN_URL = "/accounts/signin/"
+LOGOUT_URL = "/accounts/signout/"
 
 LOGIN_EXEMPT_URLS = (
-    r'^account/',  # allow any URL under /account/*
+    r'^accounts/',  # allow any URL under /account/*
 )
 
 #tracker config
@@ -146,7 +148,6 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.tz',
     'django.contrib.messages.context_processors.messages',
     'django.core.context_processors.request',
-    'account.context_processors.account',
     'notifications.context_processors.notifications',
 )
 
@@ -174,8 +175,9 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'account.middleware.LocaleMiddleware',
-    'account.middleware.TimezoneMiddleware',
+
+    'userena.middleware.UserenaLocaleMiddleware',
+
     'batter.middleware.LoginRequiredMiddleware',
 )
 ########## END MIDDLEWARE CONFIGURATION
@@ -210,19 +212,22 @@ DJANGO_APPS = (
 )
 
 THIRD_PARTY_APPS = (
-    'account',
     'django_extensions',
     'django_forms_bootstrap',
     'notification',
-    'postman',
     'south',
     'haystack',
     'widget_tweaks',
+    # Per-object permission system
+    'guardian',
+    'easy_thumbnails',
+    'userena'
 )
 
 # Apps specific for this project go here.
 LOCAL_APPS = (
     'batter',
+    'core',
     'music',
     'notifications',
     'profiles',
@@ -232,6 +237,19 @@ LOCAL_APPS = (
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 ########## END APP CONFIGURATION
+
+
+AUTH_PROFILE_MODULE = 'core.UserProfile'
+
+
+AUTHENTICATION_BACKENDS = (
+    'userena.backends.UserenaAuthenticationBackend',
+    'guardian.backends.ObjectPermissionBackend',
+    'django.contrib.auth.backends.ModelBackend',
+)
+
+
+ANONYMOUS_USER_ID = -1
 
 
 ########## LOGGING CONFIGURATION
@@ -278,8 +296,3 @@ NOTIFICATION_BACKENDS = [
     ("model", "notifications.backend.ModelBackend"),
 ]
 ########## END django-notification CONFIGURATION
-
-########## django-postman (inter-user messaging) CONFIGURATION
-POSTMAN_DISALLOW_ANONYMOUS = True
-POSTMAN_AUTO_MODERATE_AS = True
-########## END django-postman (inter-user messaging) CONFIGURATION
