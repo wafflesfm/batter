@@ -28,25 +28,36 @@
         .navbar-inner
           .container
             - block navbar
-              %a.btn.btn-navbar{data-toggle:'collapse', data-target:'.nav-collapse'}
+              %button.btn.btn-navbar{type: 'button', data-toggle:'collapse', data-target:'.nav-collapse'}
                 %span.icon-bar
                 %span.icon-bar
                 %span.icon-bar
+              - block brand-base
+                %a.brand{href: '/'}
+                  - block brand
+                    Batter
               .nav-collapse.collapse
+                -block nav-base
+                  %ul.nav
+                    - block nav
+                      %li
+                        %a{href: '{% url "home" %}'} Home
     - block header-base
       %header
         .container
           - block header
             .row
-              .span2
-                - block brand
-                  %h3.brand.muted
-              .span10
-                - block search-form
+              .span12
     - block content-base
-      .container
-        - block content
-
+      #content
+        .container
+          - block content
+    - block footer-base
+      %footer
+        .container
+          - block footer
+            .row
+              .span
     - block js-base
       %script{src: '{% static "js/jquery.min.js" %}'}
       %script{src: '{% static "js/bootstrap.min.js" %}'}
