@@ -1,0 +1,10 @@
+- extends "base.html"
+- load bootstrap_tags
+
+- block content
+  %form{action: '{% url "torrents_torrent_upload" %}', method: 'post', enctype: 'multipart/form-data'}
+    %legend Upload Torrent
+    - csrf_token
+    = form|as_bootstrap
+    .form-actions
+      %button.btn.btn-primary{type: 'submit', value: 'Upload'} Upload
