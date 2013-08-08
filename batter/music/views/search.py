@@ -4,7 +4,7 @@ from haystack.views import FacetedSearchView
 
 class SearchView(FacetedSearchView):
     def __init__(self, *args, **kwargs):
-        sqs = SearchQuerySet().facet('degrees')
+        sqs = SearchQuerySet()
         kwargs.update({
             'searchqueryset': sqs
         })

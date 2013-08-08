@@ -1,0 +1,5 @@
+{{ object.name }}
+
+{% for artist in object.artists.all %}
+	{{ artist.name }}
+{% endfor %}

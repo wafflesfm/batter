@@ -3,6 +3,7 @@
     - block result-logo
   .media-body
     %h4.media-heading
-      %a{href: '{{ result.object.get_absolute_url }}'}
-        - block result-name
+      -block result-name-base
+        %a{href: '{{ result.object.get_absolute_url }}'}
+          - block result-name
     - block result-body
