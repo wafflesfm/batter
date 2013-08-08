@@ -35,7 +35,6 @@ class MasterDetailTests(LoggedInTestCase):
                              slug="Black-Sheep-Boy")
         self.master.save()
         self.release = Release(name="Original",
-                               slug="Original",
                                master=self.master)
         self.release.save()
         self.master.artists.add(self.artist)
