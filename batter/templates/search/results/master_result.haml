@@ -1,6 +1,5 @@
 - extends "search/results/search_result_base.haml"
 - load static
-- load i18n
 
 - block result-logo
   %img.media-object{src: 'http://placehold.it/64', width: 64}
@@ -9,5 +8,6 @@
   = result.object.name
 
 - block result-body
-  %p
-    - trans "Artist"
+  - for artist in result.object.artists.all
+    <a class="muted" href='{{ artist.get_absolute_url }}'>{{ artist.name }}</a>{% if not forloop.last %}, {% endif %}
+  %p= result.object.modified
