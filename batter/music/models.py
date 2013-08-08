@@ -5,15 +5,17 @@ from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
 
+from model_utils import Choices
 from model_utils.models import TimeStampedModel
 
 optional = {'blank': True, 'null': True}
 
 
 @python_2_unicode_compatible
-class NamedTimeStampedModel(TimeStampedModel):
+class MusicBaseModel(TimeStampedModel):
     name = models.TextField()
     slug = models.SlugField(max_length=255)
+    image = models.ImageField(upload_to="music_image", **optional)
 
     class Meta:
         abstract = True
@@ -26,29 +28,40 @@ class NamedTimeStampedModel(TimeStampedModel):
 class MusicUpload(TimeStampedModel):
     release = models.ForeignKey('Release')
     torrent = models.OneToOneField('torrents.Torrent')
-#    release_format = models.TextField(choices=FORMAT_TYPES)
-#    bitrate = models.TextField(choices=BITRATE_TYPES)
-#    media = models.TextField(choices=MEDIA_TYPES)
-#    logfile = models.TextField(blank=True, null=True)
-#    parent = models.ForeignKey('Release', related_name='_children')
+    format = Choices(('mp3', _('MP3')),
+                     ('flac', _('FLAC')),
+                     ('aac', _('AAC')),
+                     ('ac3', _('AC3')),
+                     ('dts', _('DTS')))
+    bitrate = Choices(('192', _('192')),
+                      ('apsvbr', _('APS (VBR)')),
+                      ('v2vbr', _('V2 (VBR)')),
+                      ('v1vbr', _('V1 (VBR)')),
+                      ('256', _('256')),
+                      ('apxvbr', _('APX (VBR)')),
+                      ('v0vbr', _('V0 (VBR)')),
+                      ('320', _('320')),
+                      ('lossless', _('Lossless')),
+                      ('24bitlossless', _('24bit Lossless')),
+                      ('v8vbr', _('V8 (VBR)')),
+                      ('other', _('Other')))
 
     class Meta:
-        verbose_name = _('music upload')
-        verbose_name_plural = _('music uploads')
+        verbose_name = _('Music Upload')
+        verbose_name_plural = _('Music Uploads')
 
     def __str__(self):
         return "{} - {}".format(self.release, self.torrent)
 
 
-class Artist(NamedTimeStampedModel):
-#    discogs_id = models.PositiveIntegerField(unique=True)
-#    slug = models.TextField()
-#    realname = models.TextField()
-#    profile = models.TextField(blank=True)
+class Artist(MusicBaseModel):
+    summary = models.TextField(blank=True)
+    # TODO: Add more types of url (last.fm, spotify, etc)?
+    url = models.URLField(blank=True)
 
     class Meta:
-        verbose_name = _('artist')
-        verbose_name_plural = _('artists')
+        verbose_name = _('Artist')
+        verbose_name_plural = _('Artists')
 
     def get_absolute_url(self):
         return reverse('music_artist_detail',
@@ -56,14 +69,13 @@ class Artist(NamedTimeStampedModel):
 
 
 @python_2_unicode_compatible
-class Master(NamedTimeStampedModel):
-#    discogs_id = models.PositiveIntegerField()
+class Master(MusicBaseModel):
     artists = models.ManyToManyField('Artist', **optional)
     main = models.ForeignKey('Release', related_name='+', **optional)
 
     class Meta:
-        verbose_name = _('master')
-        verbose_name_plural = _('masters')
+        verbose_name = _('Master')
+        verbose_name_plural = _('Masters')
 
     def get_absolute_url(self):
         return reverse('music_master_detail',
@@ -77,28 +89,45 @@ class Master(NamedTimeStampedModel):
 
 
 @python_2_unicode_compatible
-class Release(NamedTimeStampedModel):
-    master = models.ForeignKey('Master', **optional)
+class Release(TimeStampedModel):
+    master = models.ForeignKey('Master')
+    label = models.ForeignKey('Label', **optional)
+    release_type = Choices(('album', _('Album')),
+                           ('soundtrack', _('Soundtrack')),
+                           ('ep', _('EP')),
+                           ('anthology', _('Anthology')),
+                           ('compilation', _('Compilation')),
+                           ('djmix', _('DJ Mix')),
+                           ('single', _('Single')),
+                           ('livealbum', _('Live Album')),
+                           ('remix', _('Remix')),
+                           ('bootleg', _('Bootleg')),
+                           ('interview', _('Interview')),
+                           ('mixtape', _('Mixtape')),
+                           ('concertrecording', _('Concert Recording')),
+                           ('demo', _('Demo')),
+                           ('unknown', _('Unknown')))
+    year = models.PositiveIntegerField(**optional)
+    catalog_num = models.TextField(blank=True)
+    name = models.TextField(blank=True)
+    scene = models.BooleanField()
 
     class Meta:
-        verbose_name = _('release')
-        verbose_name_plural = _('releases')
+        verbose_name = _('Release')
+        verbose_name_plural = _('Releases')
 
     def __str__(self):
         return "{} ({})".format(self.master, self.name)
 
 
-#~ @python_2_unicode_compatible
-#~ class Label(TimeStampedModel):
-    #~ name = models.TextField()
-    #~ parent_label = models.ForeignKey('self', blank=True, null=True)
+@python_2_unicode_compatible
+class Label(TimeStampedModel):
+    name = models.TextField()
+    parent_label = models.ForeignKey('self', **optional)
 
-    #~ class Meta:
-        #~ verbose_name = _('master')
-        #~ verbose_name_plural = _('masters')
+    class Meta:
+        verbose_name = _('Label')
+        verbose_name_plural = _('Labels')
 
-    #~ def is_vanity(self):
-        #~ return bool(self.parent_label)
-
-    #~ def __str__(self):
-        #~ return force_text(self.name)
+    def __str__(self):
+        return "{}".format(self.name)
