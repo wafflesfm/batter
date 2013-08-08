@@ -106,7 +106,7 @@ class AchievementTests(TestCase):
     def test_secret(self):
         self.ach = models.Achievement(
             slug="secret", title="The cat sat on the mat",
-            description="Haha, the title has nothing to do with how to get me!",
+            description="Haha, the title has nothing to do with how to get me",
             secrecy_type=models.Achievement.SECRECY_TYPES.image_desc_hidden
         )
         self.ach.save()

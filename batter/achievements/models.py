@@ -5,6 +5,7 @@ from django.conf import settings
 
 from model_utils import Choices
 
+
 def random_image_name(instance, filename):
     import uuid
     import os.path
@@ -91,7 +92,7 @@ class Achievement(models.Model):
             return self.secrecy_type in (
                 SECRECY_TYPES.image_desc_hidden,
                 SECRECY_TYPES.image_hidden,
-                SECRECY_TYPES.description_hidden, 
+                SECRECY_TYPES.description_hidden,
                 SECRECY_TYPES.public,
             )
         elif field == FIELD_TYPES.description:
