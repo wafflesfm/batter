@@ -28,11 +28,23 @@ class MusicBaseModel(TimeStampedModel):
 class MusicUpload(TimeStampedModel):
     release = models.ForeignKey('Release')
     torrent = models.OneToOneField('torrents.Torrent')
-#    release_format = models.TextField(choices=FORMAT_TYPES)
-#    bitrate = models.TextField(choices=BITRATE_TYPES)
-#    media = models.TextField(choices=MEDIA_TYPES)
-#    logfile = models.TextField(blank=True, null=True)
-#    parent = models.ForeignKey('Release', related_name='_children')
+    format = Choices(('mp3', _('MP3')),
+                     ('flac', _('FLAC')),
+                     ('aac', _('AAC')),
+                     ('ac3', _('AC3')),
+                     ('dts', _('DTS')))
+    bitrate = Choices(('192', _('192')),
+                      ('apsvbr', _('APS (VBR)')),
+                      ('v2vbr', _('V2 (VBR)')),
+                      ('v1vbr', _('V1 (VBR)')),
+                      ('256', _('256')),
+                      ('apxvbr', _('APX (VBR)')),
+                      ('v0vbr', _('V0 (VBR)')),
+                      ('320', _('320')),
+                      ('lossless', _('Lossless')),
+                      ('24bitlossless', _('24bit Lossless')),
+                      ('v8vbr', _('V8 (VBR)')),
+                      ('other', _('Other')))
 
     class Meta:
         verbose_name = _('Music Upload')
