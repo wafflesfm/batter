@@ -232,6 +232,7 @@ LOCAL_APPS = (
     'notifications',
     'profiles',
     'torrents',
+    'achievements',
 )
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
