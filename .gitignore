@@ -38,3 +38,6 @@ src/
 /.project
 /.pydevproject
 /.settings/org.eclipse.core.resources.prefs
+
+#vim local settings
+.vimrc.proj
