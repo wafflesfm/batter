@@ -3,7 +3,6 @@
 Exec { path => '/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin/' }
 exec { 'echo this works': }
 
-
 #set up updated apt-get repos
 
 group { 'puppet': ensure => 'present' }
@@ -61,7 +60,7 @@ package { 'vim':
 }
 
 package { 'virtualenvwrapper':
-  ensure  => latest,
+  ensure   => latest,
   provider => pip,
 }
 
@@ -76,12 +75,14 @@ service { 'redis-server':
 }
 
 
-#add/setup virtualenvwrapper to auto start and add a tmux config that acts more like screen
+# add/setup virtualenvwrapper to auto start
 
 file { '.bash_aliases':
   path    => '/home/vagrant/.bash_aliases',
   source  => '/vagrant/files/bash_aliases',
 }
+
+# add a tmux config that acts more like screen
 
 file { '.tmux.conf':
   path    => '/home/vagrant/.tmux.conf',
@@ -91,16 +92,16 @@ file { '.tmux.conf':
 
 file { '/vagrant/files/install_venv.sh':
   ensure  => 'present',
-  mode    => 777,
-  source => '/vagrant/files/install_venv.sh',
+  mode    => '0777',
+  source  => '/vagrant/files/install_venv.sh',
 }
 
-exec { '/vagrant/files/install_venv.sh': 
+exec { '/vagrant/files/install_venv.sh':
   require   => [
     Package['python-virtualenv'],
     Package['virtualenvwrapper'],
     File['.bash_aliases'],
     File['/vagrant/files/install_venv.sh'],
   ],
-  logoutput => "on_failure"
+  logoutput => 'on_failure'
 }
